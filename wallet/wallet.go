@@ -197,7 +197,6 @@ type ClientAccount struct {
 }
 
 type ListClientAccountsInput struct {
-	ClientID   string   `json:"clientId,omitempty"`
 	AccountIDs []string `json:"accountIds,omitempty"`
 }
 
