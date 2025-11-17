@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"strconv"
 	"time"
 )
 
@@ -16,8 +17,9 @@ const endpoint string = "https://external-api.wallet.halogen.my"
 const version string = "0.0.1"
 
 type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	StatusCode int    `json:"statusCode"`
+	Code       string `json:"code"`
+	Message    string `json:"message"`
 }
 
 func (e Error) Error() string {
@@ -30,6 +32,7 @@ type queryInput struct {
 }
 
 func (c *Client) query(ctx context.Context, name string, input interface{}, output interface{}) error {
+retry:
 	var jsonBuffer bytes.Buffer
 	if err := json.NewEncoder(&jsonBuffer).Encode(input); err != nil {
 		return err
@@ -97,17 +100,27 @@ func (c *Client) query(ctx context.Context, name string, input interface{}, outp
 	req = nil
 	if resp.StatusCode >= 500 {
 		return Error{
-			Code:    resp.StatusCode,
-			Message: resp.Status,
+			StatusCode: resp.StatusCode,
+			Message:    resp.Status,
 		}
 	}
 	if resp.StatusCode >= 400 {
-		sdkErr := Error{}
+		sdkErr := Error{
+			StatusCode: resp.StatusCode,
+		}
 		if err := json.NewDecoder(resp.Body).Decode(&sdkErr); err != nil {
 			return Error{
-				Code:    resp.StatusCode,
-				Message: resp.Status,
+				StatusCode: resp.StatusCode,
+				Message:    resp.Status,
 			}
+		}
+		if sdkErr.StatusCode == http.StatusTooManyRequests {
+			i, err := strconv.ParseInt(resp.Header.Get("Retry-After"), 10, 64)
+			if err != nil {
+				return sdkErr
+			}
+			time.Sleep(time.Duration(i) * time.Second)
+			goto retry
 		}
 		return sdkErr
 	}
