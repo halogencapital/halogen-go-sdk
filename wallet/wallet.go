@@ -105,7 +105,19 @@ func (c *Client) SetCredentials(keyID string, privateKeyPEM []byte) {
 	}
 }
 
-// ClientAccount is ...
+// ClientAccount represents Halogen investment account. One client may have many accounts.
+//
+// Halogen offers two Types of accounts, "single" and "joint".
+//
+//   - Single: Owned by one client, who is the the primary.
+//   - Joint: Owned by two clients, the first is the "primary", and the second is the "secondary". Secondary client may or may not have
+//     control over the account, however, funds can only be withdrawn to a bank account in the primary name.
+//
+// Halogen offers three Experiences "fundmanagement", "mandate" and "dim".
+//
+//   - Fund Management experience is meant for sophesticated investors who are eligible to invest in Public Wholesale Funds.
+//   - Mandate experience is meant for clients who have private mandates with Halogen.
+//   - DIM experience is meant for retail-investors who have diversifed automated portfolios with Halogen.
 type ClientAccount struct {
 	// ID specifies the identifier of the account.
 	ID string `json:"id,omitempty"`
@@ -197,17 +209,28 @@ type ClientAccount struct {
 }
 
 type ListClientAccountsInput struct {
+	// AccountIDs filters the list of returned accounts.
+	//
+	// Optional, if not set, all accounts associated with the client are returned.
 	AccountIDs []string `json:"accountIds,omitempty"`
 }
 
 type ListClientAccountsOutput struct {
-	Amount           float64         `json:"amount"`
-	Asset            string          `json:"asset,omitempty"`
-	CanCreateAccount bool            `json:"canCreateAccount"`
-	Accounts         []ClientAccount `json:"accounts"`
+	// Amount is the total value of all returned accounts.
+	Amount float64 `json:"amount"`
+	// Asset specifies the Amount's asset.
+	//
+	// In case the display currency is updated then the amount will be
+	// converted to the display currency and this will hold the display currency value.
+	Asset string `json:"asset,omitempty"`
+	// CanCreateAccount reports whether the requester can create a new account under the client.
+	CanCreateAccount bool `json:"canCreateAccount"`
+	// Accounts is the list of accounts the client has access to. Filter may apply
+	// using AccountIDs in the input.
+	Accounts []ClientAccount `json:"accounts"`
 }
 
-// ListClientAccounts lists all the accounts associated with the provided client ID
+// ListClientAccounts lists all the accounts associated with the client.
 func (c *Client) ListClientAccounts(ctx context.Context, input *ListClientAccountsInput) (*ListClientAccountsOutput, error) {
 	output := ListClientAccountsOutput{}
 	err := c.query(ctx, "list_client_accounts", input, &output)
@@ -218,54 +241,173 @@ func (c *Client) ListClientAccounts(ctx context.Context, input *ListClientAccoun
 }
 
 type Address struct {
-	// permanent, correspondence
-	Type     string  `json:"type,omitempty"`
-	Line1    string  `json:"line1,omitempty"`
-	Line2    *string `json:"line2,omitempty"`
-	City     string  `json:"city,omitempty"`
-	Postcode string  `json:"postcode,omitempty"`
-	State    *string `json:"state,omitempty"`
-	Country  string  `json:"country,omitempty"`
+	// Type specifies whether the address is "permanent" or "correspondence".
+	Type string `json:"type,omitempty"`
+	// Line1 is the first line of the address in text format.
+	Line1 string `json:"line1,omitempty"`
+	// Line2 is the second line of the address in text format.
+	//
+	// Optional.
+	Line2 *string `json:"line2,omitempty"`
+	// City is the city of the address.
+	City string `json:"city,omitempty"`
+	// Postcode is the postcode of the address.
+	Postcode string `json:"postcode,omitempty"`
+	// Status is the status of the address.
+	//
+	// Optional.
+	State *string `json:"state,omitempty"`
+	// Country is the country of the address.
+	Country string `json:"country,omitempty"`
 }
 
 type GetClientProfileInput struct {
-	ClientID string `json:"clientId,omitempty"`
 }
 
 type GetClientProfileOutput struct {
-	Name                  string   `json:"name,omitempty"`
-	Nationality           *string  `json:"nationality,omitempty"`
-	NricNo                *string  `json:"nricNo,omitempty"`
-	PassportNo            *string  `json:"passportNo,omitempty"`
-	Msisdn                *string  `json:"msisdn,omitempty"`
-	Email                 *string  `json:"email,omitempty"`
-	PermanentAddress      *Address `json:"permanentAddress,omitempty"`
+	// Name is the full name of the client as per official documents.
+	//
+	// Expect '/' to be part of the name.
+	Name string `json:"name,omitempty"`
+
+	// Nationality is the nationality of the client.
+	Nationality *string `json:"nationality,omitempty"`
+
+	// NricNo is the Malaysian NRIC number of the client.
+	//
+	// Only exists for Malaysian clients.
+	NricNo *string `json:"nricNo,omitempty"`
+
+	// PassportNp is the Passport number of the client.
+	//
+	// Only exists for Non-Malaysian clients.
+	PassportNo *string `json:"passportNo,omitempty"`
+
+	// Msisdn is the phone number of the client.
+	Msisdn *string `json:"msisdn,omitempty"`
+
+	// Email is the email of the client. Value is NULL for corporates.
+	//
+	// AuthorisedPersonEmail is used for corporates.
+	Email *string `json:"email,omitempty"`
+
+	// PermanentAddress is the permanent address of the client.
+	PermanentAddress *Address `json:"permanentAddress,omitempty"`
+
+	// CorrespondenceAddress is the correspondence address of the client.
 	CorrespondenceAddress *Address `json:"correspondenceAddress,omitempty"`
 
-	// individual, corporate
-	Type                     string  `json:"type,omitempty"`
-	InvestorCategory         string  `json:"investorCategory,omitempty"`
-	CountryOfIncoporation    *string `json:"countryOfIncorporation,omitempty"`
-	AuthorisedPersonName     *string `json:"authorisedPersonName,omitempty"`
-	AuthorisedPersonEmail    *string `json:"authorisedPersonEmail,omitempty"`
-	AuthorisedPersonMsisdn   *string `json:"authorisedPersonMsisdn,omitempty"`
+	// Type specifies the client's type "individual" or "corporate".
+	Type string `json:"type,omitempty"`
+
+	// InvestorCategory specifies the investor category that can be one of "accreditedInvestor", "highNetworthInvestor",
+	// "sophisticatedInvestor250k", "retailInvestor".
+	//
+	// 	- Accredited investor:
+	// 		- Licensed CMSRL or Registered persons, including CEOs/Directors of CMSLs.
+	// 		- Allowed to invest in Public Wholesale Fund, Private Mandate, DIM.
+	//	- High net-worth investor:
+	// 		- Annual Income of > RM300,000 (Individual)
+	// 		- or > RM400,000 (Households)
+	// 		- or > RM1,000,000 (investment portfolio)
+	// 		- or > RM3,000,000 (net personal assets)
+	// 		- Allowed to invest in Public Wholesale Fund, Private Mandate, DIM.
+	//	- Sophisticated investor - RM 250k:
+	// 		- Any investor who can invest RM250k or more for each transaction.
+	// 		- Allowed to invest in Public Wholesale Fund, Private Mandate, DIM.
+	//	- Retail investor:
+	// 		- None of the above.
+	// 		- Allowed to invest in Private Mandate, DIM.
+	//
+	InvestorCategory string `json:"investorCategory,omitempty"`
+
+	// CountryOfIncoporation specifies the origin country of a corporate.
+	//
+	// This field is NULL for an individual client.
+	CountryOfIncoporation *string `json:"countryOfIncorporation,omitempty"`
+
+	// AuthorisedPersonName specifies the authorised person's name of a corporate.
+	//
+	// This field is NULL for an individual client.
+	AuthorisedPersonName *string `json:"authorisedPersonName,omitempty"`
+
+	// AuthorisedPersonEmail specifies the authorised person's email of a corporate.
+	//
+	// This field is NULL for an individual client.
+	AuthorisedPersonEmail *string `json:"authorisedPersonEmail,omitempty"`
+
+	// AuthorisedPersonMsisdn specifies the authorised person's phone number of a corporate.
+	//
+	// This field is NULL for an individual client.
+	AuthorisedPersonMsisdn *string `json:"authorisedPersonMsisdn,omitempty"`
+
+	// AuthorisedPersonOfficeNo specifies the authorised person's office phone number of a corporate.
+	//
+	// This field is NULL for an individual client.
 	AuthorisedPersonOfficeNo *string `json:"authorisedPersonOfficeNo,omitempty"`
-	CompanyRegistrationNo    *string `json:"companyRegistrationNo,omitempty"`
+
+	// CompanyRegistrationNo specifies the registration number of a corporate.
+	//
+	// This field is NULL for an individual client.
+	CompanyRegistrationNo *string `json:"companyRegistrationNo,omitempty"`
+
+	// OldCompanyRegistrationNo specifies the old format of the registration number of a corporate.
+	//
+	// This field is NULL for an individual client.
 	OldCompanyRegistrationNo *string `json:"oldCompanyRegistrationNo,omitempty"`
 
-	Ethnicity                *string `json:"ethnicity,omitempty"`
-	DomesticRinggitBorrowing *string `json:"domesticRinggitBorrowing,omitempty"`
-	TaxResidency             *string `json:"taxResidency,omitempty"`
-	CountryTax               *string `json:"countryTax,omitempty"`
-	TaxIdentificationNo      *string `json:"taxIdentificationNo,omitempty"`
-	IncompleteProfile        bool    `json:"incompleteProfile"`
+	// Ethnicity specifies the ethnicity of the client. Value is one of "bumiputera", "chinese",
+	// "indian" or "other".
+	//
+	// Field is filled post registration.
+	Ethnicity *string `json:"ethnicity,omitempty"`
 
-	IsAccountOwner               bool   `json:"isAccountOwner"`
-	CanInvestInUnitTrust         bool   `json:"canInvestInUnitTrust"`
-	CanInvestInDim               bool   `json:"canInvestInDim"`
-	CanUpdateProfile             bool   `json:"canUpdateProfile"`
-	CanSubscribePushNotification bool   `json:"canSubscribePushNotification"`
-	Status                       string `json:"status,omitempty"`
+	// DomesticRinggitBorrowing specifies the domestic ringgit borrowing status of the client. Value
+	// is one of "residentWithoutDrbOrNonResidentOfMalaysia", "residentWithDRBButNotExceeded1M" or "residentWithDRBExceeded1M".
+	//
+	// Field is filled post registration.
+	DomesticRinggitBorrowing *string `json:"domesticRinggitBorrowing,omitempty"`
+
+	// TaxResidency specifies the tax residency of the client. Value is one of "onlyMalaysia", "multiple"
+	// or "nonMalaysia".
+	//
+	// Field is filled post registration.
+	TaxResidency *string `json:"taxResidency,omitempty"`
+
+	// CountryTax specifies the country which the client pays tax to. Value is free-text country name.
+	//
+	// Field is filled post registration.
+	CountryTax *string `json:"countryTax,omitempty"`
+
+	// TaxIdentificationNo specifies the tax account number of the client. Value is free-text.
+	//
+	// Field is filled post registration.
+	TaxIdentificationNo *string `json:"taxIdentificationNo,omitempty"`
+
+	// IncompleteProfile reports whether the client's profile incomplete.
+	//
+	// False when all fields filled.
+	IncompleteProfile bool `json:"incompleteProfile"`
+
+	// IsAccountOwner reports whether the requester is the account owner. False when the requester
+	// is acting on behalf the account's owner.
+	IsAccountOwner bool `json:"isAccountOwner"`
+
+	// CanInvestInUnitTrust reports whether the requester can invest in unit trust funds.
+	CanInvestInUnitTrust bool `json:"canInvestInUnitTrust"`
+
+	// CanInvestInDim reports whether the requester can invest in dim.
+	CanInvestInDim bool `json:"canInvestInDim"`
+
+	// CanUpdateProfile reports whether the requester can update and complete the profile.
+	CanUpdateProfile bool `json:"canUpdateProfile"`
+
+	// CanSubscribePushNotification reports whether the requester can subscribe to push notifications.
+	CanSubscribePushNotification bool `json:"canSubscribePushNotification"`
+
+	// Status specifies the status of the client's profile. Value is one of "pending", "rejected",
+	// "active" or "withdrawn".
+	Status string `json:"status,omitempty"`
 }
 
 func (c *Client) GetClientProfile(ctx context.Context, input *GetClientProfileInput) (*GetClientProfileOutput, error) {
