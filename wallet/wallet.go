@@ -984,21 +984,6 @@ func (c *Client) GetPreviewInvest(ctx context.Context, input *GetPreviewInvestIn
 // Commands
 //
 
-type PortfolioAsset struct {
-	ID                string `json:"id,omitempty"`
-	FundClassSequence *int   `json:"fundClassSequence,omitempty"`
-	Name              string `json:"name,omitempty"`
-	Code              string `json:"code,omitempty"`
-	ImageUrl          string `json:"imageUrl,omitempty"`
-	// spot, fund
-	Type                      string  `json:"type,omitempty"`
-	HexColor                  string  `json:"hexColor,omitempty"`
-	Group                     string  `json:"group,omitempty"`
-	GroupHexColor             string  `json:"groupHexColor,omitempty"`
-	ExposurePercentage        float64 `json:"exposurePercentage,omitempty"`
-	MinimumExposurePercentage float64 `json:"minimumExposurePercentage,omitempty"`
-}
-
 type InvestInput struct {
 	AccountID         string  `json:"accountId,omitempty"`
 	FundID            string  `json:"fundId,omitempty"`
@@ -1197,18 +1182,4 @@ type UpdateClientProfileOutput struct {
 func (c *Client) UpdateClientProfile(ctx context.Context, input *UpdateClientProfileInput) (output *UpdateClientProfileOutput, err error) {
 	err = c.command(ctx, "update_client_profile", input, &output)
 	return output, err
-}
-
-type FirebasePushMessage struct {
-	Data         map[string]string         `json:"data,omitempty"`
-	Notification *FirebasePushNotification `json:"notification,omitempty"`
-	Token        string                    `json:"token,omitempty"`
-	Topic        string                    `json:"-"`
-	Condition    string                    `json:"condition,omitempty"`
-}
-
-type FirebasePushNotification struct {
-	Title    string `json:"title,omitempty"`
-	Body     string `json:"body,omitempty"`
-	ImageURL string `json:"image,omitempty"`
 }
