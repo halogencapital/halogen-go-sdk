@@ -1000,7 +1000,6 @@ type PortfolioAsset struct {
 }
 
 type InvestInput struct {
-	ClientID          string  `json:"clientId,omitempty"`
 	AccountID         string  `json:"accountId,omitempty"`
 	FundID            string  `json:"fundId,omitempty"`
 	FundClassSequence int     `json:"fundClassSequence,omitempty"`
@@ -1026,7 +1025,6 @@ func (c *Client) Invest(ctx context.Context, input *InvestInput) (output *Invest
 }
 
 type RedeemInput struct {
-	ClientID            string  `json:"clientId,omitempty"`
 	AccountID           string  `json:"accountId,omitempty"`
 	FundID              string  `json:"fundId,omitempty"`
 	FundClassSequence   int     `json:"fundClassSequence,omitempty"`
@@ -1045,7 +1043,6 @@ func (c *Client) Redeem(ctx context.Context, input *RedeemInput) (output *Redeem
 }
 
 type SwitchInput struct {
-	ClientID  string `json:"clientId,omitempty"`
 	AccountID string `json:"accountId,omitempty"`
 
 	SwitchFromFundID            string `json:"switchFromFundId,omitempty"`
@@ -1067,7 +1064,6 @@ func (c *Client) Switch(ctx context.Context, input *SwitchInput) (output *Switch
 }
 
 type CancelRequestInput struct {
-	ClientID  string `json:"clientId,omitempty"`
 	AccountID string `json:"accountId,omitempty"`
 	RequestID string `json:"requestId,omitempty"`
 }
@@ -1081,7 +1077,6 @@ func (c *Client) CancelRequest(ctx context.Context, input *CancelRequestInput) (
 }
 
 type WithdrawInput struct {
-	ClientID  string  `json:"clientId,omitempty"`
 	AccountID string  `json:"accountId,omitempty"`
 	Amount    float64 `json:"amount,omitempty"`
 }
@@ -1096,7 +1091,6 @@ func (c *Client) Withdraw(ctx context.Context, input *WithdrawInput) (output *Wi
 }
 
 type DepositInput struct {
-	ClientID  string  `json:"clientId,omitempty"`
 	AccountID string  `json:"accountId,omitempty"`
 	Amount    float64 `json:"amount,omitempty"`
 }
@@ -1111,7 +1105,6 @@ func (c *Client) Deposit(ctx context.Context, input *DepositInput) (output *Depo
 }
 
 type CreateSuitabilityAssessmentInput struct {
-	ClientID              string                 `json:"clientId,omitempty"`
 	SuitabilityAssessment *SuitabilityAssessment `json:"suitabilityAssessment,omitempty"`
 }
 
@@ -1125,7 +1118,6 @@ func (c *Client) CreateSuitabilityAssessment(ctx context.Context, input *CreateS
 }
 
 type CreateClientBankAccountInput struct {
-	ClientID    string       `json:"clientId,omitempty"`
 	BankAccount *BankAccount `json:"bankAccount,omitempty"`
 }
 
@@ -1138,7 +1130,6 @@ func (c *Client) CreateClientBankAccount(ctx context.Context, input *CreateClien
 }
 
 type UpdateDisplayCurrencyInput struct {
-	ClientID        string `json:"clientId,omitempty"`
 	DisplayCurrency string `json:"displayCurrency,omitempty"`
 }
 
@@ -1151,7 +1142,6 @@ func (c *Client) UpdateDisplayCurrency(ctx context.Context, input *UpdateDisplay
 }
 
 type UpdateAccountNameInput struct {
-	ClientID    string `json:"clientId,omitempty"`
 	AccountID   string `json:"accountId,omitempty"`
 	AccountName string `json:"accountName,omitempty"`
 }
@@ -1165,7 +1155,6 @@ func (c *Client) UpdateAccountName(ctx context.Context, input *UpdateAccountName
 }
 
 type InitiateDuitNowPaymentInput struct {
-	ClientID  string `json:"clientId,omitempty"`
 	AccountID string `json:"accountId,omitempty"`
 	RequestID string `json:"requestId,omitempty"`
 	BankCode  string `json:"bankCode,omitempty"`
@@ -1193,8 +1182,6 @@ func (c *Client) UpdatePersonaTitle(ctx context.Context, input *UpdatePersonaTit
 }
 
 type UpdateClientProfileInput struct {
-	ClientID string `json:"clientId,omitempty"`
-
 	Ethnicity      string `json:"ethnicity,omitempty"`
 	OtherEthnicity string `json:"otherEthnicity,omitempty"`
 
