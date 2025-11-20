@@ -1030,6 +1030,20 @@ func (c *Client) GetPreviewInvest(ctx context.Context, input *GetPreviewInvestIn
 	return output, err
 }
 
+type GetProjectedFundPriceInput struct {
+	FundID            string `json:"fundId,omitempty"`
+	FundClassSequence int    `json:"fundClassSequence,omitempty"`
+}
+
+type GetProjectedFundPriceOutput struct {
+	NetAssetValuePerUnit float64 `json:"netAssetValuePerUnit"`
+}
+
+func (c *Client) GetProjectedFundPrice(ctx context.Context, input *GetProjectedFundPriceInput) (output *GetProjectedFundPriceOutput, err error) {
+	err = c.query(ctx, "get_projected_fund_price", input, &output)
+	return output, err
+}
+
 //
 // Commands
 //
