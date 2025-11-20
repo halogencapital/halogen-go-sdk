@@ -1068,6 +1068,11 @@ type InvestOutput struct {
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Invest creates investment request in the target account. ....
+//
+// Error codes:
+//   - ErrMissingParameter
+//   - ErrInternal
 func (c *Client) Invest(ctx context.Context, input *InvestInput) (output *InvestOutput, err error) {
 	err = c.command(ctx, "invest", input, &output)
 	return output, err
