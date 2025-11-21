@@ -1048,206 +1048,291 @@ func (c *Client) GetProjectedFundPrice(ctx context.Context, input *GetProjectedF
 // Commands
 //
 
+//
+// Commands
+//
+
+// InvestInput represents the payload for creating a new investment request.
 type InvestInput struct {
-	AccountID         string  `json:"accountId,omitempty"`
-	FundID            string  `json:"fundId,omitempty"`
-	FundClassSequence int     `json:"fundClassSequence,omitempty"`
-	Amount            float64 `json:"amount,omitempty"`
+	// AccountID specifies the identifier of the client account for the investment.
+	AccountID string `json:"accountId,omitempty"`
+	// FundID specifies the identifier of the fund to invest in.
+	FundID string `json:"fundId,omitempty"`
+	// FundClassSequence specifies the class of the fund to invest in.
+	FundClassSequence int `json:"fundClassSequence,omitempty"`
+	// Amount specifies the amount to be invested.
+	Amount float64 `json:"amount,omitempty"`
 
 	// ConsentFundIM is deprecated, use Consents instead.
 	ConsentFundIM bool `json:"consentFundIM,omitempty"`
 	// ConsentHighRisk is deprecated, use Consents instead.
 	ConsentHighRisk bool `json:"consentHighRisk,omitempty"`
 
+	// Consents specifies a map of consent names to boolean values (true if consented).
 	Consents map[string]bool `json:"consents,omitempty"`
 
+	// VoucherCode specifies an optional voucher code to apply to the investment.
 	VoucherCode string `json:"voucherCode,omitempty"`
 }
 
+// InvestOutput represents the response for an investment request.
 type InvestOutput struct {
+	// RequestID specifies the identifier of the created investment request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Invest creates investment request in the target account. ....
-//
-// Error codes:
-//   - ErrMissingParameter
-//   - ErrInternal
+// Invest initiates a new investment request for a specified amount into a fund class.
 func (c *Client) Invest(ctx context.Context, input *InvestInput) (output *InvestOutput, err error) {
 	err = c.command(ctx, "invest", input, &output)
 	return output, err
 }
 
+// RedeemInput represents the payload for creating a new redemption (withdrawal) request.
 type RedeemInput struct {
-	AccountID           string  `json:"accountId,omitempty"`
-	FundID              string  `json:"fundId,omitempty"`
-	FundClassSequence   int     `json:"fundClassSequence,omitempty"`
-	RequestedAmount     float64 `json:"requestedAmount,omitempty"`
-	Units               float64 `json:"units,omitempty"`
-	ToBankAccountNumber string  `json:"toBankAccountNumber,omitempty"`
+	// AccountID specifies the identifier of the client account.
+	AccountID string `json:"accountId,omitempty"`
+	// FundID specifies the identifier of the fund to redeem from.
+	FundID string `json:"fundId,omitempty"`
+	// FundClassSequence specifies the class of the fund to redeem from.
+	FundClassSequence int `json:"fundClassSequence,omitempty"`
+	// RequestedAmount specifies the amount to redeem.
+	RequestedAmount float64 `json:"requestedAmount,omitempty"`
+	// Units specifies the number of units to redeem.
+	Units float64 `json:"units,omitempty"`
+	// ToBankAccountNumber specifies the bank account number for the redemption proceeds.
+	ToBankAccountNumber string `json:"toBankAccountNumber,omitempty"`
 }
 
+// RedeemOutput represents the response for a redemption request.
 type RedeemOutput struct {
+	// RequestID specifies the identifier of the created redemption request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Redeem initiates a new redemption request (selling units or withdrawing an amount) from a fund class.
 func (c *Client) Redeem(ctx context.Context, input *RedeemInput) (output *RedeemOutput, err error) {
 	err = c.command(ctx, "redeem", input, &output)
 	return output, err
 }
 
+// SwitchInput represents the payload for creating a new fund switch request.
 type SwitchInput struct {
+	// AccountID specifies the identifier of the client account.
 	AccountID string `json:"accountId,omitempty"`
 
-	SwitchFromFundID            string `json:"switchFromFundId,omitempty"`
-	SwitchFromFundClassSequence int    `json:"switchFromFundClassSequence,omitempty"`
-	SwitchToFundID              string `json:"switchToFundId,omitempty"`
-	SwitchToFundClassSequence   int    `json:"switchToFundClassSequence,omitempty"`
+	// SwitchFromFundID specifies the fund ID to switch units *from*.
+	SwitchFromFundID string `json:"switchFromFundId,omitempty"`
+	// SwitchFromFundClassSequence specifies the fund class sequence to switch units *from*.
+	SwitchFromFundClassSequence int `json:"switchFromFundClassSequence,omitempty"`
+	// SwitchToFundID specifies the fund ID to switch units *to*.
+	SwitchToFundID string `json:"switchToFundId,omitempty"`
+	// SwitchToFundClassSequence specifies the fund class sequence to switch units *to*.
+	SwitchToFundClassSequence int `json:"switchToFundClassSequence,omitempty"`
 
+	// RequestedAmount specifies the amount to switch.
 	RequestedAmount float64 `json:"requestedAmount,omitempty"`
-	Units           float64 `json:"units,omitempty"`
+	// Units specifies the number of units to switch.
+	Units float64 `json:"units,omitempty"`
 }
 
+// SwitchOutput represents the response for a switch request.
 type SwitchOutput struct {
+	// RequestID specifies the identifier of the created switch request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Switch initiates a new request to switch funds/units within the client account.
 func (c *Client) Switch(ctx context.Context, input *SwitchInput) (output *SwitchOutput, err error) {
 	err = c.command(ctx, "switch", input, &output)
 	return output, err
 }
 
+// CancelRequestInput represents the payload for canceling an existing request.
 type CancelRequestInput struct {
+	// AccountID specifies the identifier of the client account associated with the request.
 	AccountID string `json:"accountId,omitempty"`
+	// RequestID specifies the identifier of the request to cancel.
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// CancelRequestOutput represents the response for a cancel request command (empty upon success).
 type CancelRequestOutput struct {
 }
 
+// CancelRequest cancels a pending request (e.g., investment, redemption, switch).
 func (c *Client) CancelRequest(ctx context.Context, input *CancelRequestInput) (output *CancelRequestOutput, err error) {
-	err = c.command(ctx, "switch", input, &output)
+	err = c.command(ctx, "cancel_request", input, &output)
 	return output, err
 }
 
+// WithdrawInput represents the payload for creating a withdrawal request (DIM experience).
 type WithdrawInput struct {
-	AccountID string  `json:"accountId,omitempty"`
-	Amount    float64 `json:"amount,omitempty"`
+	// AccountID specifies the identifier of the DIM client account.
+	AccountID string `json:"accountId,omitempty"`
+	// Amount specifies the amount to withdraw.
+	Amount float64 `json:"amount,omitempty"`
 }
 
+// WithdrawOutput represents the response for a withdrawal request.
 type WithdrawOutput struct {
+	// RequestID specifies the identifier of the created withdrawal request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Withdraw initiates a new withdrawal request for a DIM account.
 func (c *Client) Withdraw(ctx context.Context, input *WithdrawInput) (output *WithdrawOutput, err error) {
 	err = c.command(ctx, "withdraw", input, &output)
 	return output, err
 }
 
+// DepositInput represents the payload for creating a deposit request (DIM experience).
 type DepositInput struct {
-	AccountID string  `json:"accountId,omitempty"`
-	Amount    float64 `json:"amount,omitempty"`
+	// AccountID specifies the identifier of the DIM client account.
+	AccountID string `json:"accountId,omitempty"`
+	// Amount specifies the amount to deposit.
+	Amount float64 `json:"amount,omitempty"`
 }
 
+// DepositOutput represents the response for a deposit request.
 type DepositOutput struct {
+	// RequestID specifies the identifier of the created deposit request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Deposit initiates a new deposit request for a DIM account.
 func (c *Client) Deposit(ctx context.Context, input *DepositInput) (output *DepositOutput, err error) {
 	err = c.command(ctx, "deposit", input, &output)
 	return output, err
 }
 
+// CreateSuitabilityAssessmentInput represents the payload for submitting a new suitability assessment.
 type CreateSuitabilityAssessmentInput struct {
+	// SuitabilityAssessment contains the details of the assessment being submitted.
 	SuitabilityAssessment *SuitabilityAssessment `json:"suitabilityAssessment,omitempty"`
 }
 
+// CreateSuitabilityAssessmentOutput represents the response for creating a suitability assessment.
 type CreateSuitabilityAssessmentOutput struct {
+	// SuitabilityAssessmentID specifies the identifier of the created assessment.
 	SuitabilityAssessmentID string `json:"suitabilityAssessmentId,omitempty"`
 }
 
+// CreateSuitabilityAssessment submits a new suitability assessment for the client.
 func (c *Client) CreateSuitabilityAssessment(ctx context.Context, input *CreateSuitabilityAssessmentInput) (output *CreateSuitabilityAssessmentOutput, err error) {
 	err = c.command(ctx, "create_suitability_assessment", input, &output)
 	return output, err
 }
 
+// CreateClientBankAccountInput represents the payload for adding a new bank account.
 type CreateClientBankAccountInput struct {
+	// BankAccount contains the details of the bank account to be created.
 	BankAccount *BankAccount `json:"bankAccount,omitempty"`
 }
 
+// CreateClientBankAccountOutput represents the response for adding a bank account (empty upon success).
 type CreateClientBankAccountOutput struct {
 }
 
+// CreateClientBankAccount adds a new bank account to the client's profile.
 func (c *Client) CreateClientBankAccount(ctx context.Context, input *CreateClientBankAccountInput) (output *CreateClientBankAccountOutput, err error) {
 	err = c.command(ctx, "create_client_bank_account", input, &output)
 	return output, err
 }
 
+// UpdateDisplayCurrencyInput represents the payload for changing the client's display currency.
 type UpdateDisplayCurrencyInput struct {
+	// DisplayCurrency specifies the new currency ID to be used for display.
 	DisplayCurrency string `json:"displayCurrency,omitempty"`
 }
 
+// UpdateDisplayCurrencyOutput represents the response for updating the display currency (empty upon success).
 type UpdateDisplayCurrencyOutput struct {
 }
 
+// UpdateDisplayCurrency sets the preferred display currency for the client's accounts.
 func (c *Client) UpdateDisplayCurrency(ctx context.Context, input *UpdateDisplayCurrencyInput) (output *UpdateDisplayCurrencyOutput, err error) {
 	err = c.command(ctx, "update_display_currency", input, &output)
 	return output, err
 }
 
+// UpdateAccountNameInput represents the payload for changing a client account's name.
 type UpdateAccountNameInput struct {
-	AccountID   string `json:"accountId,omitempty"`
+	// AccountID specifies the ID of the account to update.
+	AccountID string `json:"accountId,omitempty"`
+	// AccountName specifies the new name for the account.
 	AccountName string `json:"accountName,omitempty"`
 }
 
+// UpdateAccountNameOutput represents the response for updating an account name (empty upon success).
 type UpdateAccountNameOutput struct {
 }
 
+// UpdateAccountName updates the friendly name of a client account.
 func (c *Client) UpdateAccountName(ctx context.Context, input *UpdateAccountNameInput) (output *UpdateAccountNameOutput, err error) {
 	err = c.command(ctx, "update_account_name", input, &output)
 	return output, err
 }
 
+// InitiateDuitNowPaymentInput represents the payload for initiating a DuitNow payment.
 type InitiateDuitNowPaymentInput struct {
+	// AccountID specifies the client account ID related to the payment.
 	AccountID string `json:"accountId,omitempty"`
+	// RequestID specifies the related request ID (e.g., deposit or investment) for this payment.
 	RequestID string `json:"requestId,omitempty"`
-	BankCode  string `json:"bankCode,omitempty"`
+	// BankCode specifies the code of the bank from which the DuitNow payment will be initiated.
+	BankCode string `json:"bankCode,omitempty"`
 }
 
+// InitiateDuitNowPaymentOutput represents the response for initiating a DuitNow payment.
 type InitiateDuitNowPaymentOutput struct {
+	// Url specifies the redirect URL to the bank's payment gateway or instruction page.
 	Url string `json:"url,omitempty"`
 }
 
+// InitiateDuitNowPayment creates a payment instruction and provides a redirect URL for DuitNow payment.
 func (c *Client) InitiateDuitNowPayment(ctx context.Context, input *InitiateDuitNowPaymentInput) (output *InitiateDuitNowPaymentOutput, err error) {
 	err = c.command(ctx, "initiate_duitnow_payment", input, &output)
 	return output, err
 }
 
+// UpdatePersonaTitleInput represents the payload for updating a client's persona title (e.g., Mr., Ms.).
 type UpdatePersonaTitleInput struct {
+	// Title specifies the new title.
 	Title string `json:"title,omitempty"`
 }
 
+// UpdatePersonaTitleOutput represents the response for updating the persona title (empty upon success).
 type UpdatePersonaTitleOutput struct {
 }
 
+// UpdatePersonaTitle updates the title of the client's persona/profile.
 func (c *Client) UpdatePersonaTitle(ctx context.Context, input *UpdatePersonaTitleInput) (output *UpdatePersonaTitleOutput, err error) {
 	err = c.command(ctx, "update_persona_title", input, &output)
 	return output, err
 }
 
+// UpdateClientProfileInput represents the payload for updating specific fields on the client's profile.
 type UpdateClientProfileInput struct {
-	Ethnicity      string `json:"ethnicity,omitempty"`
+	// Ethnicity specifies the client's ethnicity. Value is one of "bumiputera", "chinese", "indian" or "other".
+	Ethnicity string `json:"ethnicity,omitempty"`
+	// OtherEthnicity is used if Ethnicity is "other" to specify the exact ethnicity.
 	OtherEthnicity string `json:"otherEthnicity,omitempty"`
 
+	// DomesticRinggitBorrowing specifies the client's domestic ringgit borrowing status.
 	DomesticRinggitBorrowing string `json:"domesticRinggitBorrowing,omitempty"`
-	TaxResidency             string `json:"taxResidency,omitempty"`
-	CountryTax               string `json:"countryTax,omitempty"`
-	TaxIdentificationNo      string `json:"taxIdentificationNo,omitempty"`
+	// TaxResidency specifies the client's tax residency status. Value is one of "onlyMalaysia", "multiple" or "nonMalaysia".
+	TaxResidency string `json:"taxResidency,omitempty"`
+	// CountryTax specifies the country where the client pays tax.
+	CountryTax string `json:"countryTax,omitempty"`
+	// TaxIdentificationNo specifies the client's tax account number.
+	TaxIdentificationNo string `json:"taxIdentificationNo,omitempty"`
 }
 
+// UpdateClientProfileOutput represents the response for updating the client profile (empty upon success).
 type UpdateClientProfileOutput struct {
 }
 
+// UpdateClientProfile updates the client's demographic and tax-related profile details.
 func (c *Client) UpdateClientProfile(ctx context.Context, input *UpdateClientProfileInput) (output *UpdateClientProfileOutput, err error) {
 	err = c.command(ctx, "update_client_profile", input, &output)
 	return output, err

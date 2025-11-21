@@ -6,3 +6,6 @@ eckey:
 rsakey:
 	mkdir -p .key/
 	openssl req -new -newkey rsa:4096 -nodes -keyout .key/rsa_private_key.pem -out .key/rsa_csr.pem -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com"
+
+run-pkg:
+	cd ../ && pkgsite --http localhost:4444 --open wallet/
