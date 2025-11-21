@@ -18,16 +18,6 @@ const (
 	userAgent string = "wallet/" + version + " lang/go"
 )
 
-type Error struct {
-	StatusCode int    `json:"statusCode"`
-	Code       string `json:"code"`
-	Message    string `json:"message"`
-}
-
-func (e Error) Error() string {
-	return fmt.Sprintf("%s", e.Message)
-}
-
 type queryInput struct {
 	Name    string      `json:"name"`
 	Payload interface{} `json:"payload"`
