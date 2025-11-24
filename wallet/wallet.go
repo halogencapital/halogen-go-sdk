@@ -1160,8 +1160,8 @@ func (c *Client) GetProjectedFundPrice(ctx context.Context, input *GetProjectedF
 // Commands
 //
 
-// InvestInput represents the payload for creating a new investment request.
-type InvestInput struct {
+// CreateInvestmentRequestInput represents the payload for creating a new investment request.
+type CreateInvestmentRequestInput struct {
 	// AccountID specifies the identifier of the client account for the investment.
 	AccountID string `json:"accountId,omitempty"`
 	// FundID specifies the identifier of the fund to invest in.
@@ -1183,13 +1183,13 @@ type InvestInput struct {
 	VoucherCode string `json:"voucherCode,omitempty"`
 }
 
-// InvestOutput represents the response for an investment request.
-type InvestOutput struct {
+// CreateInvestmentRequestOutput represents the response for an investment request.
+type CreateInvestmentRequestOutput struct {
 	// RequestID specifies the identifier of the created investment request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Invest initiates a new investment request for a specified amount into a fund class.
+// CreateInvestmentRequest initiates a new investment request for a specified amount into a fund class.
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1197,13 +1197,13 @@ type InvestOutput struct {
 //   - [ErrActionOutsideFundHours]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
-func (c *Client) Invest(ctx context.Context, input *InvestInput) (output *InvestOutput, err error) {
-	err = c.command(ctx, "invest", input, &output)
+func (c *Client) CreateInvestmentRequest(ctx context.Context, input *CreateInvestmentRequestInput) (output *CreateInvestmentRequestOutput, err error) {
+	err = c.command(ctx, "create_investment_request", input, &output)
 	return output, err
 }
 
-// RedeemInput represents the payload for creating a new redemption (withdrawal) request.
-type RedeemInput struct {
+// CreateRedeemRequestInput represents the payload for creating a new redemption (withdrawal) request.
+type CreateRedemptionRequestInput struct {
 	// AccountID specifies the identifier of the client account.
 	AccountID string `json:"accountId,omitempty"`
 	// FundID specifies the identifier of the fund to redeem from.
@@ -1218,13 +1218,13 @@ type RedeemInput struct {
 	ToBankAccountNumber string `json:"toBankAccountNumber,omitempty"`
 }
 
-// RedeemOutput represents the response for a redemption request.
-type RedeemOutput struct {
+// CreateRedeemRequestOutput represents the response for a redemption request.
+type CreateRedemptionRequestOutput struct {
 	// RequestID specifies the identifier of the created redemption request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Redeem initiates a new redemption request (selling units or withdrawing an amount) from a fund class.
+// CreateRedemptionRequest initiates a new redemption request (selling units or withdrawing an amount) from a fund class.
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1234,13 +1234,13 @@ type RedeemOutput struct {
 //   - [ErrActionOutsideFundHours]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
-func (c *Client) Redeem(ctx context.Context, input *RedeemInput) (output *RedeemOutput, err error) {
-	err = c.command(ctx, "redeem", input, &output)
+func (c *Client) CreateRedemptionRequest(ctx context.Context, input *CreateRedemptionRequestInput) (output *CreateRedemptionRequestOutput, err error) {
+	err = c.command(ctx, "create_redemption_request", input, &output)
 	return output, err
 }
 
-// SwitchInput represents the payload for creating a new fund switch request.
-type SwitchInput struct {
+// CreateSwitchRequestInput represents the payload for creating a new fund switch request.
+type CreateSwitchRequestInput struct {
 	// AccountID specifies the identifier of the client account.
 	AccountID string `json:"accountId,omitempty"`
 
@@ -1259,13 +1259,13 @@ type SwitchInput struct {
 	Units float64 `json:"units,omitempty"`
 }
 
-// SwitchOutput represents the response for a switch request.
-type SwitchOutput struct {
+// CreateSwitchRequestOutput represents the response for a switch request.
+type CreateSwitchRequestOutput struct {
 	// RequestID specifies the identifier of the created switch request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Switch initiates a new request to switch funds/units within the client account.
+// CreateSwitchRequest initiates a new request to switch funds/units within the client account.
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1275,24 +1275,24 @@ type SwitchOutput struct {
 //   - [ErrActionOutsideFundHours]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
-func (c *Client) Switch(ctx context.Context, input *SwitchInput) (output *SwitchOutput, err error) {
-	err = c.command(ctx, "switch", input, &output)
+func (c *Client) CreateSwitchRequest(ctx context.Context, input *CreateSwitchRequestInput) (output *CreateSwitchRequestOutput, err error) {
+	err = c.command(ctx, "create_switch_request", input, &output)
 	return output, err
 }
 
-// CancelRequestInput represents the payload for canceling an existing request.
-type CancelRequestInput struct {
+// CreateRequestCancellationInput represents the payload for canceling an existing request.
+type CreateRequestCancellationInput struct {
 	// AccountID specifies the identifier of the client account associated with the request.
 	AccountID string `json:"accountId,omitempty"`
 	// RequestID specifies the identifier of the request to cancel.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// CancelRequestOutput represents the response for a cancel request command (empty upon success).
-type CancelRequestOutput struct {
+// CreateRequestCancellationOutput represents the response for a cancel request command (empty upon success).
+type CreateRequestCancellationOutput struct {
 }
 
-// CancelRequest cancels a pending request (e.g., investment, redemption, switch).
+// CreateRequestCancellation cancels a pending request (e.g., investment, redemption, switch).
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1300,60 +1300,60 @@ type CancelRequestOutput struct {
 //   - [ErrInsufficientAccess]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
-func (c *Client) CancelRequest(ctx context.Context, input *CancelRequestInput) (output *CancelRequestOutput, err error) {
-	err = c.command(ctx, "cancel_request", input, &output)
+func (c *Client) CreateRequestCancellation(ctx context.Context, input *CreateRequestCancellationInput) (output *CreateRequestCancellationOutput, err error) {
+	err = c.command(ctx, "create_request_cancellation", input, &output)
 	return output, err
 }
 
-// WithdrawInput represents the payload for creating a withdrawal request (DIM experience).
-type WithdrawInput struct {
+// CreateWithdrawalRequestInput represents the payload for creating a withdrawal request (DIM experience).
+type CreateWithdrawalRequestInput struct {
 	// AccountID specifies the identifier of the DIM client account.
 	AccountID string `json:"accountId,omitempty"`
 	// Amount specifies the amount to withdraw.
 	Amount float64 `json:"amount,omitempty"`
 }
 
-// WithdrawOutput represents the response for a withdrawal request.
-type WithdrawOutput struct {
+// CreateWithdrawalRequestOutput represents the response for a withdrawal request.
+type CreateWithdrawalRequestOutput struct {
 	// RequestID specifies the identifier of the created withdrawal request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Withdraw initiates a new withdrawal request for a DIM account.
+// CreateWithdrawalRequest initiates a new withdrawal request for a DIM account.
 //
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrActionNotAllowedForAccountType]
 //   - [ErrInsufficientAccess]
 //   - [ErrInternal]
-func (c *Client) Withdraw(ctx context.Context, input *WithdrawInput) (output *WithdrawOutput, err error) {
-	err = c.command(ctx, "withdraw", input, &output)
+func (c *Client) CreateWithdrawalRequest(ctx context.Context, input *CreateWithdrawalRequestInput) (output *CreateWithdrawalRequestOutput, err error) {
+	err = c.command(ctx, "create_withdrawal_request", input, &output)
 	return output, err
 }
 
-// DepositInput represents the payload for creating a deposit request (DIM experience).
-type DepositInput struct {
+// CreateDepositRequestInput represents the payload for creating a deposit request (DIM experience).
+type CreateDepositRequestInput struct {
 	// AccountID specifies the identifier of the DIM client account.
 	AccountID string `json:"accountId,omitempty"`
 	// Amount specifies the amount to deposit.
 	Amount float64 `json:"amount,omitempty"`
 }
 
-// DepositOutput represents the response for a deposit request.
-type DepositOutput struct {
+// CreateDepositRequestOutput represents the response for a deposit request.
+type CreateDepositRequestOutput struct {
 	// RequestID specifies the identifier of the created deposit request.
 	RequestID string `json:"requestId,omitempty"`
 }
 
-// Deposit initiates a new deposit request for a DIM account.
+// CreateDepositRequest initiates a new deposit request for a DIM account.
 //
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
 //   - [ErrActionNotAllowedForAccountType]
 //   - [ErrInternal]
-func (c *Client) Deposit(ctx context.Context, input *DepositInput) (output *DepositOutput, err error) {
-	err = c.command(ctx, "deposit", input, &output)
+func (c *Client) CreateDepositRequest(ctx context.Context, input *CreateDepositRequestInput) (output *CreateDepositRequestOutput, err error) {
+	err = c.command(ctx, "create_deposit_request", input, &output)
 	return output, err
 }
 
@@ -1450,8 +1450,8 @@ func (c *Client) UpdateAccountName(ctx context.Context, input *UpdateAccountName
 	return output, err
 }
 
-// InitiateDuitNowPaymentInput represents the payload for initiating a DuitNow payment.
-type InitiateDuitNowPaymentInput struct {
+// CreateDuitnowPaymentInput represents the payload for initiating a DuitNow payment.
+type CreateDuitnowPaymentInput struct {
 	// AccountID specifies the client account ID related to the payment.
 	AccountID string `json:"accountId,omitempty"`
 	// RequestID specifies the related request ID (e.g., deposit or investment) for this payment.
@@ -1460,13 +1460,13 @@ type InitiateDuitNowPaymentInput struct {
 	BankCode string `json:"bankCode,omitempty"`
 }
 
-// InitiateDuitNowPaymentOutput represents the response for initiating a DuitNow payment.
-type InitiateDuitNowPaymentOutput struct {
+// CreateDuitnowPaymentOutput represents the response for initiating a DuitNow payment.
+type CreateDuitnowPaymentOutput struct {
 	// Url specifies the redirect URL to the bank's payment gateway or instruction page.
 	Url string `json:"url,omitempty"`
 }
 
-// InitiateDuitNowPayment creates a payment instruction and provides a redirect URL for DuitNow payment.
+// CreateDuitnowPayment creates a payment instruction and provides a redirect URL for DuitNow payment.
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1474,8 +1474,8 @@ type InitiateDuitNowPaymentOutput struct {
 //   - [ErrDuitNow]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
-func (c *Client) InitiateDuitNowPayment(ctx context.Context, input *InitiateDuitNowPaymentInput) (output *InitiateDuitNowPaymentOutput, err error) {
-	err = c.command(ctx, "initiate_duitnow_payment", input, &output)
+func (c *Client) CreateDuitnowPayment(ctx context.Context, input *CreateDuitnowPaymentInput) (output *CreateDuitnowPaymentOutput, err error) {
+	err = c.command(ctx, "create_duitnow_payment", input, &output)
 	return output, err
 }
 
