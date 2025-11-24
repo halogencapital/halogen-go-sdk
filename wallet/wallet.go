@@ -231,6 +231,11 @@ type ListClientAccountsOutput struct {
 }
 
 // ListClientAccounts lists all the accounts associated with the client.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListClientAccounts(ctx context.Context, input *ListClientAccountsInput) (output *ListClientAccountsOutput, err error) {
 	err = c.query(ctx, "list_client_accounts", input, &output)
 	return output, err
@@ -407,6 +412,11 @@ type GetClientProfileOutput struct {
 }
 
 // GetClientProfile retrieves the profile details of a client.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) GetClientProfile(ctx context.Context, input *GetClientProfileInput) (output *GetClientProfileOutput, err error) {
 	err = c.query(ctx, "get_client_profile", input, &output)
 	return output, err
@@ -525,6 +535,11 @@ type GetFundOutput struct {
 	Fund *Fund `json:"fund,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) GetFund(ctx context.Context, input *GetFundInput) (output *GetFundOutput, err error) {
 	err = c.query(ctx, "get_fund", input, &output)
 	return output, err
@@ -539,6 +554,11 @@ type GetRequestByDuitNowEndToEndIDOutput struct {
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) GetRequestByDuitNowEndToEndID(ctx context.Context, input *GetRequestByDuitNowEndToEndIDInput) (output *GetRequestByDuitNowEndToEndIDOutput, err error) {
 	err = c.query(ctx, "get_request_by_duitnow_endToEndId", input, &output)
 	return output, err
@@ -566,6 +586,11 @@ type GetClientAccountAllocationPerformanceOutput struct {
 	Performance []AllocationPerformance `json:"performance"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) GetClientAccountAllocationPerformance(ctx context.Context, input *GetClientAccountAllocationPerformanceInput) (output *GetClientAccountAllocationPerformanceOutput, err error) {
 	err = c.query(ctx, "get_client_account_allocation_performance", input, &output)
 	return output, err
@@ -586,6 +611,12 @@ type GetClientAccountStatementOutput struct {
 	Bytes    []byte `json:"bytes,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInvalidDateRange]
+//   - [ErrInternal]
 func (c *Client) GetClientAccountStatement(ctx context.Context, input *GetClientAccountStatementInput) (output *GetClientAccountStatementOutput, err error) {
 	err = c.query(ctx, "get_client_account_statement", input, &output)
 	return output, err
@@ -603,6 +634,11 @@ type GetClientAccountRequestConfirmationOutput struct {
 	Bytes    []byte `json:"bytes,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) GetClientAccountRequestConfirmation(ctx context.Context, input *GetClientAccountRequestConfirmationInput) (output *GetClientAccountRequestConfirmationOutput, err error) {
 	err = c.query(ctx, "get_client_account_request_confirmation", input, &output)
 	return output, err
@@ -616,6 +652,10 @@ type GetClientReferralOutput struct {
 	ReferredClientsCount int    `json:"referredClientsCount"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) GetClientReferral(ctx context.Context, input *GetClientReferralInput) (output *GetClientReferralOutput, err error) {
 	err = c.query(ctx, "get_client_referral", input, &output)
 	return output, err
@@ -645,6 +685,11 @@ type GetClientAccountRequestPolicyOutput struct {
 	Participants []PolicyParticipant `json:"participants"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidRequestPolicy]
+//   - [ErrInternal]
 func (c *Client) GetClientAccountRequestPolicy(ctx context.Context, input *GetClientAccountRequestPolicyInput) (output *GetClientAccountRequestPolicyOutput, err error) {
 	err = c.query(ctx, "get_client_account_request_policy", input, &output)
 	return output, err
@@ -658,6 +703,10 @@ type ListFundsForSubscriptionOutput struct {
 	Funds []Fund `json:"funds"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListFundsForSubscription(ctx context.Context, input *ListFundsForSubscriptionInput) (output *ListFundsForSubscriptionOutput, err error) {
 	err = c.query(ctx, "list_funds_for_subscription", input, &output)
 	return output, err
@@ -694,6 +743,11 @@ type ListClientAccountBalanceOutput struct {
 	Balance []*Balance `json:"balance,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) ListClientAccountBalance(ctx context.Context, input *ListClientAccountBalanceInput) (output *ListClientAccountBalanceOutput, err error) {
 	err = c.query(ctx, "list_client_account_balance", input, &output)
 	return output, err
@@ -765,6 +819,11 @@ type ListClientAccountRequestsOutput struct {
 	Requests []ClientAccountRequest `json:"requests"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) ListClientAccountRequests(ctx context.Context, input *ListClientAccountRequestsInput) (output *ListClientAccountRequestsOutput, err error) {
 	err = c.query(ctx, "list_client_account_requests", input, &output)
 	return output, err
@@ -777,6 +836,10 @@ type ListClientBankAccountsOutput struct {
 	BankAccounts []BankAccount `json:"bankAccounts"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListClientBankAccounts(ctx context.Context, input *ListClientBankAccountsInput) (output *ListClientBankAccountsOutput, err error) {
 	err = c.query(ctx, "list_client_bank_accounts", input, &output)
 	return output, err
@@ -796,6 +859,10 @@ type ListDisplayCurrenciesOutput struct {
 	Currencies      []DisplayCurrency `json:"currencies"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListDisplayCurrencies(ctx context.Context, input *ListDisplayCurrenciesInput) (output *ListDisplayCurrenciesOutput, err error) {
 	err = c.query(ctx, "list_display_currencies", input, &output)
 	return output, err
@@ -826,6 +893,9 @@ type ListClientSuitabilityAssessmentsOutput struct {
 	Assessments                    []SuitabilityAssessment `json:"assessments"`
 }
 
+// Errors:
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListClientSuitabilityAssessments(ctx context.Context, input *ListClientSuitabilityAssessmentsInput) (output *ListClientSuitabilityAssessmentsOutput, err error) {
 	err = c.query(ctx, "list_client_suitability_assessments", input, &output)
 	return output, err
@@ -846,6 +916,10 @@ type ListDuitNowBanksOutput struct {
 	Banks []DuitNowBank `json:"banks"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListDuitNowBanks(ctx context.Context, input *ListDuitNowBanksInput) (output *ListDuitNowBanksOutput, err error) {
 	err = c.query(ctx, "list_duitnow_banks", input, &output)
 	return output, err
@@ -868,6 +942,11 @@ type ListInvestConsentsOutput struct {
 	ConsentHighRisk bool      `json:"consentHighRisk,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) ListInvestConsents(ctx context.Context, input *ListInvestConsentsInput) (output *ListInvestConsentsOutput, err error) {
 	err = c.query(ctx, "list_invest_consents", input, &output)
 	return output, err
@@ -887,6 +966,10 @@ type ListBanksOutput struct {
 	Banks []Bank `json:"banks"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListBanks(ctx context.Context, input *ListBanksInput) (output *ListBanksOutput, err error) {
 	err = c.query(ctx, "list_banks", input, &output)
 	return output, err
@@ -923,6 +1006,12 @@ type ListClientAccountMandateRequestsOutput struct {
 	Requests []ClientAccountMandateRequest `json:"requests"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInvalidAccountExperience]
+//   - [ErrInternal]
 func (c *Client) ListClientAccountMandateRequests(ctx context.Context, input *ListClientAccountMandateRequestsInput) (output *ListClientAccountMandateRequestsOutput, err error) {
 	err = c.query(ctx, "list_client_account_mandate_requests", input, &output)
 	return output, err
@@ -948,6 +1037,10 @@ type ListClientPromosOutput struct {
 	Promos []Promo `json:"promos"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListClientPromos(ctx context.Context, input *ListClientPromosInput) (output *ListClientPromosOutput, err error) {
 	err = c.query(ctx, "list_client_promos", input, &output)
 	return output, err
@@ -969,6 +1062,11 @@ type ListClientAccountPerformanceOutput struct {
 	Performance []ClientAccountPerformance `json:"performance,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) ListClientAccountPerformance(ctx context.Context, input *ListClientAccountPerformanceInput) (output *ListClientAccountPerformanceOutput, err error) {
 	err = c.query(ctx, "list_client_account_performance", input, &output)
 	return output, err
@@ -982,6 +1080,10 @@ type ListPaymentMethodsOutput struct {
 	BankTransfer bool `json:"bankTransfer"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) ListPaymentMethods(ctx context.Context, input *ListPaymentMethodsInput) (output *ListPaymentMethodsOutput, err error) {
 	err = c.query(ctx, "list_payment_methods", input, &output)
 	return output, err
@@ -1005,6 +1107,11 @@ type GetVoucherOutput struct {
 	PostFeeAmount                    float64 `json:"postFeeAmount"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) GetVoucher(ctx context.Context, input *GetVoucherInput) (output *GetVoucherOutput, err error) {
 	err = c.query(ctx, "get_voucher", input, &output)
 	return output, err
@@ -1025,6 +1132,11 @@ type GetPreviewInvestOutput struct {
 	DefaultVoucher                   *GetVoucherOutput `json:"defaultVoucher,omitempty"`
 }
 
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) GetPreviewInvest(ctx context.Context, input *GetPreviewInvestInput) (output *GetPreviewInvestOutput, err error) {
 	err = c.query(ctx, "get_preview_invest", input, &output)
 	return output, err
@@ -1078,6 +1190,13 @@ type InvestOutput struct {
 }
 
 // Invest initiates a new investment request for a specified amount into a fund class.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInvalidParameter]
+//   - [ErrActionOutsideFundHours]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) Invest(ctx context.Context, input *InvestInput) (output *InvestOutput, err error) {
 	err = c.command(ctx, "invest", input, &output)
 	return output, err
@@ -1106,6 +1225,15 @@ type RedeemOutput struct {
 }
 
 // Redeem initiates a new redemption request (selling units or withdrawing an amount) from a fund class.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInvalidParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInsufficientBalance]
+//   - [ErrActionOutsideFundHours]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) Redeem(ctx context.Context, input *RedeemInput) (output *RedeemOutput, err error) {
 	err = c.command(ctx, "redeem", input, &output)
 	return output, err
@@ -1138,6 +1266,15 @@ type SwitchOutput struct {
 }
 
 // Switch initiates a new request to switch funds/units within the client account.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInvalidParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInsufficientBalance]
+//   - [ErrActionOutsideFundHours]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) Switch(ctx context.Context, input *SwitchInput) (output *SwitchOutput, err error) {
 	err = c.command(ctx, "switch", input, &output)
 	return output, err
@@ -1156,6 +1293,13 @@ type CancelRequestOutput struct {
 }
 
 // CancelRequest cancels a pending request (e.g., investment, redemption, switch).
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrRequestCannotBeCancelled]
+//   - [ErrInsufficientAccess]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) CancelRequest(ctx context.Context, input *CancelRequestInput) (output *CancelRequestOutput, err error) {
 	err = c.command(ctx, "cancel_request", input, &output)
 	return output, err
@@ -1176,6 +1320,12 @@ type WithdrawOutput struct {
 }
 
 // Withdraw initiates a new withdrawal request for a DIM account.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrActionNotAllowedForAccountType]
+//   - [ErrInsufficientAccess]
+//   - [ErrInternal]
 func (c *Client) Withdraw(ctx context.Context, input *WithdrawInput) (output *WithdrawOutput, err error) {
 	err = c.command(ctx, "withdraw", input, &output)
 	return output, err
@@ -1196,6 +1346,12 @@ type DepositOutput struct {
 }
 
 // Deposit initiates a new deposit request for a DIM account.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrActionNotAllowedForAccountType]
+//   - [ErrInternal]
 func (c *Client) Deposit(ctx context.Context, input *DepositInput) (output *DepositOutput, err error) {
 	err = c.command(ctx, "deposit", input, &output)
 	return output, err
@@ -1214,6 +1370,12 @@ type CreateSuitabilityAssessmentOutput struct {
 }
 
 // CreateSuitabilityAssessment submits a new suitability assessment for the client.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) CreateSuitabilityAssessment(ctx context.Context, input *CreateSuitabilityAssessmentInput) (output *CreateSuitabilityAssessmentOutput, err error) {
 	err = c.command(ctx, "create_suitability_assessment", input, &output)
 	return output, err
@@ -1230,6 +1392,13 @@ type CreateClientBankAccountOutput struct {
 }
 
 // CreateClientBankAccount adds a new bank account to the client's profile.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrAlreadyExists]
+//   - [ErrInternal]
 func (c *Client) CreateClientBankAccount(ctx context.Context, input *CreateClientBankAccountInput) (output *CreateClientBankAccountOutput, err error) {
 	err = c.command(ctx, "create_client_bank_account", input, &output)
 	return output, err
@@ -1246,6 +1415,12 @@ type UpdateDisplayCurrencyOutput struct {
 }
 
 // UpdateDisplayCurrency sets the preferred display currency for the client's accounts.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) UpdateDisplayCurrency(ctx context.Context, input *UpdateDisplayCurrencyInput) (output *UpdateDisplayCurrencyOutput, err error) {
 	err = c.command(ctx, "update_display_currency", input, &output)
 	return output, err
@@ -1264,6 +1439,12 @@ type UpdateAccountNameOutput struct {
 }
 
 // UpdateAccountName updates the friendly name of a client account.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) UpdateAccountName(ctx context.Context, input *UpdateAccountNameInput) (output *UpdateAccountNameOutput, err error) {
 	err = c.command(ctx, "update_account_name", input, &output)
 	return output, err
@@ -1286,6 +1467,13 @@ type InitiateDuitNowPaymentOutput struct {
 }
 
 // InitiateDuitNowPayment creates a payment instruction and provides a redirect URL for DuitNow payment.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrDuitNow]
+//   - [ErrMissingResource]
+//   - [ErrInternal]
 func (c *Client) InitiateDuitNowPayment(ctx context.Context, input *InitiateDuitNowPaymentInput) (output *InitiateDuitNowPaymentOutput, err error) {
 	err = c.command(ctx, "initiate_duitnow_payment", input, &output)
 	return output, err
@@ -1302,6 +1490,10 @@ type UpdatePersonaTitleOutput struct {
 }
 
 // UpdatePersonaTitle updates the title of the client's persona/profile.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInternal]
 func (c *Client) UpdatePersonaTitle(ctx context.Context, input *UpdatePersonaTitleInput) (output *UpdatePersonaTitleOutput, err error) {
 	err = c.command(ctx, "update_persona_title", input, &output)
 	return output, err
@@ -1329,6 +1521,12 @@ type UpdateClientProfileOutput struct {
 }
 
 // UpdateClientProfile updates the client's demographic and tax-related profile details.
+//
+// Errors:
+//   - [ErrMissingParameter]
+//   - [ErrInsufficientAccess]
+//   - [ErrInvalidParameter]
+//   - [ErrInternal]
 func (c *Client) UpdateClientProfile(ctx context.Context, input *UpdateClientProfileInput) (output *UpdateClientProfileOutput, err error) {
 	err = c.command(ctx, "update_client_profile", input, &output)
 	return output, err
