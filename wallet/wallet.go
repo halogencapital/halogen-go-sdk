@@ -232,6 +232,18 @@ type ListClientAccountsOutput struct {
 
 // ListClientAccounts lists all the accounts associated with the client.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_accounts",
+//	  "payload": {
+//	    "accountIds": ["<accountId>"]
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -413,6 +425,16 @@ type GetClientProfileOutput struct {
 
 // GetClientProfile retrieves the profile details of a client.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_profile",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -535,6 +557,20 @@ type GetFundOutput struct {
 	Fund *Fund `json:"fund,omitempty"`
 }
 
+// GetFund retrieves the details of a specific fund.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_fund",
+//	  "payload": {
+//	    "fundId": "<fundId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -554,6 +590,21 @@ type GetRequestByDuitNowEndToEndIDOutput struct {
 	RequestID string `json:"requestId,omitempty"`
 }
 
+// GetRequestByDuitNowEndToEndID retrieves a request ID using the DuitNow end-to-end ID.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_request_by_duitnow_endToEndId",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "endToEndId": "<endToEndId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -586,6 +637,23 @@ type GetClientAccountAllocationPerformanceOutput struct {
 	Performance []AllocationPerformance `json:"performance"`
 }
 
+// GetClientAccountAllocationPerformance retrieves the performance data for a specific account allocation.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_account_allocation_performance",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "allocationId": "<allocationId>",
+//	    "timeframe": "<timeframe>",
+//	    "interval": "<interval>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -611,6 +679,23 @@ type GetClientAccountStatementOutput struct {
 	Bytes    []byte `json:"bytes,omitempty"`
 }
 
+// GetClientAccountStatement retrieves the account statement for a given date range.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_account_statement",
+//	  "payload": {
+//	    "accountId": <accountId>,
+//	    "fromDate": "<fromDate>",
+//	    "toDate": "<toDate<",
+//	    "format": "<format>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -634,6 +719,22 @@ type GetClientAccountRequestConfirmationOutput struct {
 	Bytes    []byte `json:"bytes,omitempty"`
 }
 
+// GetClientAccountRequestConfirmation retrieves the confirmation document for a specific request.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_account_request_confirmation",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "requestId": "<requestId>",
+//	    "format": "<format>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -652,6 +753,18 @@ type GetClientReferralOutput struct {
 	ReferredClientsCount int    `json:"referredClientsCount"`
 }
 
+// GetClientReferral retrieves the referral information for the client.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_referral",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -685,6 +798,21 @@ type GetClientAccountRequestPolicyOutput struct {
 	Participants []PolicyParticipant `json:"participants"`
 }
 
+// GetClientAccountRequestPolicy retrieves the approval policy for a specific request.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_client_account_request_policy",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "requestId": "<requestId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -703,6 +831,20 @@ type ListFundsForSubscriptionOutput struct {
 	Funds []Fund `json:"funds"`
 }
 
+// ListFundsForSubscription lists funds available for subscription for a given account.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_funds_for_subscription",
+//	  "payload": {
+//	    "accountId": "<accountId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -743,6 +885,20 @@ type ListClientAccountBalanceOutput struct {
 	Balance []*Balance `json:"balance,omitempty"`
 }
 
+// ListClientAccountBalance lists the balance of a specific client account.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_account_balance",
+//	  "payload": {
+//	    "accountId": "<accountId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -819,6 +975,21 @@ type ListClientAccountRequestsOutput struct {
 	Requests []ClientAccountRequest `json:"requests"`
 }
 
+// ListClientAccountRequests lists requests (investments, redemptions, etc.) for a specific account.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_account_requests",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "limit": <limit>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -836,6 +1007,18 @@ type ListClientBankAccountsOutput struct {
 	BankAccounts []BankAccount `json:"bankAccounts"`
 }
 
+// ListClientBankAccounts lists all bank accounts registered to the client.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_bank_accounts",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -859,6 +1042,18 @@ type ListDisplayCurrenciesOutput struct {
 	Currencies      []DisplayCurrency `json:"currencies"`
 }
 
+// ListDisplayCurrencies lists the available currencies for display purposes.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_display_currencies",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -893,6 +1088,18 @@ type ListClientSuitabilityAssessmentsOutput struct {
 	Assessments                    []SuitabilityAssessment `json:"assessments"`
 }
 
+// ListClientSuitabilityAssessments lists the suitability assessments associated with the client.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_suitability_assessments",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrInsufficientAccess]
 //   - [ErrInternal]
@@ -916,6 +1123,20 @@ type ListDuitNowBanksOutput struct {
 	Banks []DuitNowBank `json:"banks"`
 }
 
+// ListDuitNowBanks lists the available banks for DuitNow transfers.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_duitnow_banks",
+//	  "payload": {
+//	    "accountId": "<accountId>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -942,6 +1163,22 @@ type ListInvestConsentsOutput struct {
 	ConsentHighRisk bool      `json:"consentHighRisk,omitempty"`
 }
 
+// ListInvestConsents lists the required consents for a specific investment.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_invest_consents",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -966,6 +1203,18 @@ type ListBanksOutput struct {
 	Banks []Bank `json:"banks"`
 }
 
+// ListBanks lists the supported banks for the platform.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_banks",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1006,6 +1255,21 @@ type ListClientAccountMandateRequestsOutput struct {
 	Requests []ClientAccountMandateRequest `json:"requests"`
 }
 
+// ListClientAccountMandateRequests lists mandate requests for a client account.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_account_mandate_requests",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "limit": <limit>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1037,6 +1301,18 @@ type ListClientPromosOutput struct {
 	Promos []Promo `json:"promos"`
 }
 
+// ListClientPromos lists available promotions for the client.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_promos",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1062,6 +1338,22 @@ type ListClientAccountPerformanceOutput struct {
 	Performance []ClientAccountPerformance `json:"performance,omitempty"`
 }
 
+// ListClientAccountPerformance lists the historical performance of client accounts.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_client_account_performance",
+//	  "payload": {
+//	    "accountIds": ["<accountId>", "<accountId>"],
+//	    "timeframe": "<timeframe>",
+//	    "interval": "<interval>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1080,6 +1372,18 @@ type ListPaymentMethodsOutput struct {
 	BankTransfer bool `json:"bankTransfer"`
 }
 
+// ListPaymentMethods lists the available payment methods.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "list_payment_methods",
+//	  "payload": {}
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1107,6 +1411,24 @@ type GetVoucherOutput struct {
 	PostFeeAmount                    float64 `json:"postFeeAmount"`
 }
 
+// GetVoucher retrieves details of a specific voucher.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_voucher",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	    "amount": <amount>,
+//	    "voucherCode": "<voucherCode>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1132,6 +1454,23 @@ type GetPreviewInvestOutput struct {
 	DefaultVoucher                   *GetVoucherOutput `json:"defaultVoucher,omitempty"`
 }
 
+// GetPreviewInvest calculates a preview of an investment, including fees.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_preview_invest",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	    "amount": <amount>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1151,6 +1490,20 @@ type GetProjectedFundPriceOutput struct {
 	NetAssetValuePerUnit float64 `json:"netAssetValuePerUnit"`
 }
 
+// GetProjectedFundPrice retrieves the projected price for a fund.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/query" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "get_projected_fund_price",
+//	  "payload": {
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	  }
+//	}'
 func (c *Client) GetProjectedFundPrice(ctx context.Context, input *GetProjectedFundPriceInput) (output *GetProjectedFundPriceOutput, err error) {
 	err = c.query(ctx, "get_projected_fund_price", input, &output)
 	return output, err
@@ -1191,6 +1544,24 @@ type CreateInvestmentRequestOutput struct {
 
 // CreateInvestmentRequest initiates a new investment request for a specified amount into a fund class.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_investment_request",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	    "amount": <amount>,
+//	    "consents": {
+//	      "IM": true
+//	    }
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInvalidParameter]
@@ -1225,6 +1596,22 @@ type CreateRedemptionRequestOutput struct {
 }
 
 // CreateRedemptionRequest initiates a new redemption request (selling units or withdrawing an amount) from a fund class.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_redemption_request",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "fundId": "<fundId>",
+//	    "fundClassSequence": <fundClassSequence>
+//	    "requestedAmount": <amount>,
+//	    "toBankAccountNumber": "<toBankAccountNumber>"
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1267,6 +1654,23 @@ type CreateSwitchRequestOutput struct {
 
 // CreateSwitchRequest initiates a new request to switch funds/units within the client account.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_switch_request",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "switchFromFundId": "<switchFromFundId>",
+//	    "switchFromFundClassSequence": <fundClassSequence>
+//	    "switchToFundId": "<switchToFundId>",
+//	    "switchToFundClassSequence": <switchToFundClassSequence>
+//	    "requestedAmount": <amount>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInvalidParameter]
@@ -1293,6 +1697,19 @@ type CreateRequestCancellationOutput struct {
 }
 
 // CreateRequestCancellation cancels a pending request (e.g., investment, redemption, switch).
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_request_cancellation",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "requestId": "<requestId>"
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1321,6 +1738,19 @@ type CreateWithdrawalRequestOutput struct {
 
 // CreateWithdrawalRequest initiates a new withdrawal request for a DIM account.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_withdrawal_request",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "amount": <amount>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrActionNotAllowedForAccountType]
@@ -1347,6 +1777,19 @@ type CreateDepositRequestOutput struct {
 
 // CreateDepositRequest initiates a new deposit request for a DIM account.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_deposit_request",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "amount": <amount>
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1371,6 +1814,21 @@ type CreateSuitabilityAssessmentOutput struct {
 
 // CreateSuitabilityAssessment submits a new suitability assessment for the client.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_suitability_assessment",
+//	  "payload": {
+//	    "suitabilityAssessment": {
+//	      "riskTolerance": "<riskTolerance>",
+//	      "totalScore": <totalScore>
+//	    }
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1392,6 +1850,21 @@ type CreateClientBankAccountOutput struct {
 }
 
 // CreateClientBankAccount adds a new bank account to the client's profile.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_client_bank_account",
+//	  "payload": {
+//	    "bankAccount": {
+//	      "accountNumber": "<accountNumber>",
+//	      "bankName": "<bankName>"
+//	    }
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1416,6 +1889,18 @@ type UpdateDisplayCurrencyOutput struct {
 
 // UpdateDisplayCurrency sets the preferred display currency for the client's accounts.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "update_display_currency",
+//	  "payload": {
+//	    "displayCurrency": "<displayCurrency>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1439,6 +1924,19 @@ type UpdateAccountNameOutput struct {
 }
 
 // UpdateAccountName updates the friendly name of a client account.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "update_account_name",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "accountName": "<accountName>"
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1468,6 +1966,20 @@ type CreateDuitnowPaymentOutput struct {
 
 // CreateDuitnowPayment creates a payment instruction and provides a redirect URL for DuitNow payment.
 //
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "create_duitnow_payment",
+//	  "payload": {
+//	    "accountId": "<accountId>",
+//	    "requestId": "<requestId>",
+//	    "bankCode": "<bankCode>"
+//	  }
+//	}'
+//
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
@@ -1490,6 +2002,18 @@ type UpdatePersonaTitleOutput struct {
 }
 
 // UpdatePersonaTitle updates the title of the client's persona/profile.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "update_persona_title",
+//	  "payload": {
+//	    "title": "<title>"
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
@@ -1521,6 +2045,19 @@ type UpdateClientProfileOutput struct {
 }
 
 // UpdateClientProfile updates the client's demographic and tax-related profile details.
+//
+// cURL:
+//
+//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
+//	  -H 'Authorization: Bearer <JWT>' \
+//	  -H 'Content-Type: application/json; charset=utf-8' \
+//	  -d $'{
+//	  "name": "update_client_profile",
+//	  "payload": {
+//	    "ethnicity": "<ethnicity>",
+//	    "taxResidency": "<taxResidency>"
+//	  }
+//	}'
 //
 // Errors:
 //   - [ErrMissingParameter]
