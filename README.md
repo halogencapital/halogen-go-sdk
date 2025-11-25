@@ -7,7 +7,7 @@ Package wallet is a Go client for calling the Halogen Wallet HTTP API.
 You may install the package using `go get`.
 
 ```bash
-$ go get github.com/halogencapital/halogen-go-sdk/wallet
+$ go get github.com/halogencapital/wallet-go
 ```
 
 ### Quick start
