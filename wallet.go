@@ -1993,38 +1993,6 @@ func (c *Client) CreateDuitnowPayment(ctx context.Context, input *CreateDuitnowP
 	return output, err
 }
 
-// UpdatePersonaTitleInput represents the payload for updating a client's persona title (e.g., Mr., Ms.).
-type UpdatePersonaTitleInput struct {
-	// Title specifies the new title.
-	Title string `json:"title,omitempty"`
-}
-
-// UpdatePersonaTitleOutput represents the response for updating the persona title (empty upon success).
-type UpdatePersonaTitleOutput struct {
-}
-
-// UpdatePersonaTitle updates the title of the client's persona/profile.
-//
-// cURL:
-//
-//	curl -X "POST" "https://external-api.wallet.halogen.my/command" \
-//	  -H 'Authorization: Bearer <JWT>' \
-//	  -H 'Content-Type: application/json; charset=utf-8' \
-//	  -d $'{
-//	  "name": "update_persona_title",
-//	  "payload": {
-//	    "title": "<title>"
-//	  }
-//	}'
-//
-// Errors:
-//   - [ErrMissingParameter]
-//   - [ErrInternal]
-func (c *Client) UpdatePersonaTitle(ctx context.Context, input *UpdatePersonaTitleInput) (output *UpdatePersonaTitleOutput, err error) {
-	err = c.command(ctx, "update_persona_title", input, &output)
-	return output, err
-}
-
 // UpdateClientProfileInput represents the payload for updating specific fields on the client's profile.
 type UpdateClientProfileInput struct {
 	// Ethnicity specifies the client's ethnicity. Value is one of "bumiputera", "chinese", "indian" or "other".
