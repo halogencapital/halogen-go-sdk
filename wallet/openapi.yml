@@ -17,7 +17,7 @@ info:
     2.  `payload`: The data structure required for that specific action.
 
     > **Documentation Tip:** In the **Request Body** section below, use the **Schema/Example Dropdown** to select the specific action you want to perform. The documentation will update to show the exact `payload` required.
-  version: 1.0.0
+  version: 0.0.1
 servers:
   - url: https://external-api.wallet.halogen.my
     description: Production Server
