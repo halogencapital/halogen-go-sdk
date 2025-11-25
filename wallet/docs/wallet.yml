@@ -55,7 +55,7 @@ components:
       value: { statusCode: 400, code: "ErrRequestCannotBeCancelled", message: "Request cannot be cancelled. {reason}." }
     
     ErrUnauthorizedIPAddress:
-      value: { statusCode: 401, code: "ErrUnauthorizedIPAddress", message: "IP address not authorized." }
+      value: { statusCode: 401, code: "ErrUnauthorizedIPAddress", message: "IP address is not authorized." }
     
     ErrInsufficientAccess:
       value: { statusCode: 403, code: "ErrInsufficientAccess", message: "" }
