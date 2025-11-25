@@ -58,7 +58,8 @@ retry:
 		}
 	}
 	// clean up the memory when CredentialsLoaderFunc is set.
-	token, err := newToken(keyID, "/query", reqBody, 10*time.Second, o.CredentialsLoaderFunc != nil)
+	shouldCleanMemory := o.CredentialsLoaderFunc != nil
+	token, err := newToken(keyID, "/query", reqBody, 10*time.Second, shouldCleanMemory)
 	if err != nil {
 		return err
 	}
@@ -156,7 +157,8 @@ retry:
 		}
 	}
 	// clean up the memory when CredentialsLoaderFunc is set.
-	token, err := newToken(keyID, "/command", reqBody, 10*time.Second, o.CredentialsLoaderFunc != nil)
+	shouldCleanMemory := o.CredentialsLoaderFunc != nil
+	token, err := newToken(keyID, "/command", reqBody, 10*time.Second, shouldCleanMemory)
 	if err != nil {
 		return err
 	}
