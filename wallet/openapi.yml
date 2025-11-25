@@ -4,6 +4,30 @@ info:
   description: |
     The Halogen Wallet API provides a unified interface for managing client investment portfolios, funds, and transaction requests.
 
+    ### API Key Setup
+
+    To authenticate and use the API, you must first create an API key:
+    1. Login to **https://wallet.halogen.my**.
+    2. Navigate to **Settings > API Keys**.
+    3. Create a new API key by providing a Certificate Signing Request (CSR). Elliptic Curve P-256 (recommended) and RSA-4096 are supported.
+
+    #### Generating a CSR using OpenSSL
+
+    * **Elliptic Curve P-256 (Recommended):**
+        ```bash
+        $ mkdir -p .key
+        $ openssl ecparam -name prime256v1 -genkey -noout -out .key/ec_private_key.pem
+        $ openssl req -new -key .key/ec_private_key.pem -out .key/ec_csr.pem -sha256 -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com"
+        ```
+    * **RSA-4096:**
+        ```bash
+        $ mkdir -p .key
+        $ openssl req -new -newkey rsa:4096 -nodes -keyout .key/rsa_private_key.pem -out .key/rsa_csr.pem -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com"
+        ```
+    > **Security Note:** Keep the generated **Private Key** (e.g., `ec_private_key.pem` or `rsa_private_key.pem`) in a secure storage and **never share it**. This key is used to digitally sign your API requests before they are sent to the Halogen Wallet server.
+
+    ---
+
     ### API Usage Guide
 
     This API routes requests through two primary endpoints based on the operation type.
@@ -11,7 +35,10 @@ info:
     * **`/query`**: Used for **read-only** operations (e.g., listing accounts, getting profile details).
     * **`/command`**: Used for **write/mutate** operations (e.g., creating investments, updating profiles).
 
+    ---
+
     ### Request Structure
+
     Every request must be a **POST** containing a JSON body with two keys:
     1.  `name`: The specific action identifier (e.g., `list_client_accounts`).
     2.  `payload`: The data structure required for that specific action.
