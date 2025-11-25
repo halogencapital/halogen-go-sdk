@@ -104,8 +104,13 @@ const (
 	// ErrActionOutsideFundHours is returned when the requested action cannot be performed outside of fund operating hours.
 	ErrActionOutsideFundHours string = "ErrActionOutsideFundHours"
 
-	// ErrDuitNow is returned when a DuitNow-specific error occurs (payment failed or unsupported scenario).
-	ErrDuitNow string = "ErrDuitNow"
+	// ErrDuitNowUnavailable is returned when the DuitNow service is temporarily unavailable,
+	// offline, or cannot process the request due to upstream issues.
+	ErrDuitNowUnavailable string = "ErrDuitNowUnavailable"
+
+	// ErrDuitNowInvalidParameter is returned when a parameter or value provided in the request
+	// is invalid, malformed, or not supported by the DuitNow system.
+	ErrDuitNowInvalidParameter string = "ErrDuitNowInvalidParameter"
 
 	// ErrInsufficientBalance is returned when the account does not have sufficient balance to complete the operation.
 	ErrInsufficientBalance string = "ErrInsufficientBalance"

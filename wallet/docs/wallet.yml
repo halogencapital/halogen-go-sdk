@@ -1,0 +1,1019 @@
+openapi: 3.0.0
+info:
+  title: Halogen Wallet API
+  description: |
+    API documentation generated from `wallet.go`.
+    
+    ### JSON-RPC Architecture
+    This API uses a **JSON-RPC** pattern over HTTP POST. 
+    
+    **How to use:**
+    1.  Select the endpoint (`/query` or `/command`).
+    2.  In the **Request Body**, use the **Schema dropdown** to select the specific action (e.g., `ListClientAccounts`).
+    3.  The schema will update to show the required `name` and `payload` for that specific action.
+  version: 1.0.0
+servers:
+  - url: https://external-api.wallet.halogen.my
+    description: Production Server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # -------------------------------------------------------------------------
+  # SHARED ERROR EXAMPLES (Values)
+  # -------------------------------------------------------------------------
+  examples:
+    ErrMissingParameter:
+      value: { statusCode: 400, code: "ErrMissingParameter", message: "{field} is required." }
+    ErrInvalidParameter:
+      value: { statusCode: 400, code: "ErrInvalidParameter", message: "{field} is invalid." }
+    ErrInvalidDateRange:
+      value: { statusCode: 400, code: "ErrInvalidDateRange", message: "fromDate must be earlier than toDate." }
+    ErrActionOutsideFundHours:
+      value: { statusCode: 400, code: "ErrActionOutsideFundHours", message: "Unable to {action}. Fund's operation hours 08:00 to 22:00 MYT" }
+    ErrInsufficientBalance:
+      value: { statusCode: 400, code: "ErrInsufficientBalance", message: "insufficient balance." }
+    ErrDuitNowInvalidParameter:
+      value: { statusCode: 400, code: "ErrDuitNow", message: "{reason}." }
+    ErrAlreadyExists:
+      value: { statusCode: 400, code: "ErrAlreadyExists", message: "{resource} already exists." }
+    ErrInvalidAccountExperience:
+      value: { statusCode: 400, code: "ErrInvalidAccountExperience", message: "account is not a {experience}." }
+    ErrInvalidRequestPolicy:
+      value: { statusCode: 400, code: "ErrInvalidRequestPolicy", message: "policy is invalid. Value must be {reason}." }
+    ErrRequestCannotBeCancelled:
+      value: { statusCode: 400, code: "ErrRequestCannotBeCancelled", message: "Request cannot be cancelled. {reason}." }
+    
+    ErrUnauthorizedIPAddress:
+      value: { statusCode: 401, code: "ErrUnauthorizedIPAddress", message: "IP address not authorized." }
+    
+    ErrInsufficientAccess:
+      value: { statusCode: 403, code: "ErrInsufficientAccess", message: "" }
+    
+    ErrMissingResource:
+      value: { statusCode: 404, code: "ErrMissingResource", message: "The {resource} does not exist." }
+    
+    ErrCancelledRequest:
+      value: { statusCode: 410, code: "ErrCancelledRequest", message: "The request has been cancelled." }
+    
+    ErrActionNotAllowedForAccountType:
+      value: { statusCode: 412, code: "ErrActionNotAllowedForAccountType", message: "Action not allowed for this account type." }
+    ErrSuitabilityAssessmentRequired:
+      value: { statusCode: 412, code: "ErrSuitabilityAssessmentRequired", message: "Suitability assessment required." }
+    
+    ErrRateLimitExceeded:
+      value: { statusCode: 429, code: "ErrRateLimitExceeded", message: "rate limit exceeded." }
+    
+    ErrInternal:
+      value: { statusCode: 500, code: "ErrInternal", message: "" }
+    
+    ErrServiceUnavailable:
+      value: { statusCode: 503, code: "ErrServiceUnavailable", message: "" }
+    ErrDuitNowUnavailable:
+      value: { statusCode: 503, code: "ErrDuitNowUnavailable", message: "DuitNow is offline, please try again later." }
+
+  # -------------------------------------------------------------------------
+  # SHARED RESPONSE DEFINITIONS (The "Dropdowns" for Errors)
+  # -------------------------------------------------------------------------
+  responses:
+    BadRequestError:
+      description: Bad Request / Validation Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrMissingParameter: { $ref: '#/components/examples/ErrMissingParameter' }
+            ErrInvalidParameter: { $ref: '#/components/examples/ErrInvalidParameter' }
+            ErrInvalidDateRange: { $ref: '#/components/examples/ErrInvalidDateRange' }
+            ErrInvalidRequestPolicy: { $ref: '#/components/examples/ErrInvalidRequestPolicy' }
+            ErrActionOutsideFundHours: { $ref: '#/components/examples/ErrActionOutsideFundHours' }
+            ErrInsufficientBalance: { $ref: '#/components/examples/ErrInsufficientBalance' }
+            ErrDuitNowInvalidParameter: { $ref: '#/components/examples/ErrDuitNowInvalidParameter' }
+            ErrAlreadyExists: { $ref: '#/components/examples/ErrAlreadyExists' }
+            ErrInvalidAccountExperience: { $ref: '#/components/examples/ErrInvalidAccountExperience' }
+            ErrRequestCannotBeCancelled: { $ref: '#/components/examples/ErrRequestCannotBeCancelled' }
+
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrUnauthorizedIPAddress: { $ref: '#/components/examples/ErrUnauthorizedIPAddress' }
+
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrInsufficientAccess: { $ref: '#/components/examples/ErrInsufficientAccess' }
+
+    NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrMissingResource: { $ref: '#/components/examples/ErrMissingResource' }
+
+    GoneError:
+      description: Gone
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrCancelledRequest: { $ref: '#/components/examples/ErrCancelledRequest' }
+
+    PreconditionFailedError:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrActionNotAllowedForAccountType: { $ref: '#/components/examples/ErrActionNotAllowedForAccountType' }
+            ErrSuitabilityAssessmentRequired: { $ref: '#/components/examples/ErrSuitabilityAssessmentRequired' }
+
+    TooManyRequestsError:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrRateLimitExceeded: { $ref: '#/components/examples/ErrRateLimitExceeded' }
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrInternal: { $ref: '#/components/examples/ErrInternal' }
+
+    ServiceUnavailableError:
+      description: Service Unavailable
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            ErrServiceUnavailable: { $ref: '#/components/examples/ErrServiceUnavailable' }
+            ErrDuitNowUnavailable: { $ref: '#/components/examples/ErrDuitNowUnavailable' }
+
+  schemas:
+    # -------------------------------------------------------------------------
+    # DATA MODELS
+    # -------------------------------------------------------------------------
+    Error:
+      type: object
+      properties:
+        statusCode: { type: integer, deprecated: true, example: 400 }
+        code: { type: string, example: "ErrMissingParameter" }
+        message: { type: string, example: "accountId is required." }
+
+    Address:
+      type: object
+      properties:
+        type: { type: string }
+        line1: { type: string }
+        line2: { type: string }
+        city: { type: string }
+        postcode: { type: string }
+        state: { type: string }
+        country: { type: string }
+
+    BankAccount:
+      type: object
+      properties:
+        accountNumber: { type: string }
+        accountName: { type: string }
+        accountCurrency: { type: string }
+        accountType: { type: string }
+        bankName: { type: string }
+        bankBic: { type: string }
+        referenceNumber: { type: string }
+        imageUrl: { type: string }
+        status: { type: string }
+        source: { type: string }
+        createdAt: { type: string }
+        createdBy: { type: string }
+
+    ClientAccount:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [single, joint] }
+        name: { type: string }
+        experience: { type: string, enum: [fundmanagement, mandate, dim] }
+        portfolioValue: { type: number, format: double }
+        exposurePercentage: { type: number, format: double }
+        canInvest: { type: boolean }
+        canRedeem: { type: boolean }
+
+    Fund:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        code: { type: string }
+        riskRating: { type: string }
+        classes:
+          type: array
+          items: { $ref: '#/components/schemas/FundClass' }
+
+    FundClass:
+      type: object
+      properties:
+        sequence: { type: integer }
+        label: { type: string }
+        baseCurrency: { type: string }
+        managementFee: { type: number }
+        minimumInitialInvestment: { type: number }
+
+    # -------------------------------------------------------------------------
+    # PAYLOADS (Inputs & Outputs)
+    # -------------------------------------------------------------------------
+    ListClientAccountsInput:
+      type: object
+      properties:
+        accountIds: { type: array, items: { type: string } }
+    ListClientAccountsOutput:
+      type: object
+      properties:
+        amount: { type: number }
+        asset: { type: string }
+        canCreateAccount: { type: boolean }
+        accounts: { type: array, items: { $ref: '#/components/schemas/ClientAccount' } }
+
+    GetClientProfileInput:
+      type: object
+      properties: {}
+    GetClientProfileOutput:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        permanentAddress: { $ref: '#/components/schemas/Address' }
+
+    GetFundInput:
+      type: object
+      properties:
+        fundId: { type: string }
+    GetFundOutput:
+      type: object
+      properties:
+        fund: { $ref: '#/components/schemas/Fund' }
+
+    GetRequestByDuitNowEndToEndIDInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        endToEndId: { type: string }
+    GetRequestByDuitNowEndToEndIDOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    GetClientAccountAllocationPerformanceInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        allocationId: { type: string }
+        type: { type: string }
+        fundClassSequence: { type: integer }
+        timeframe: { type: string }
+        interval: { type: string }
+    GetClientAccountAllocationPerformanceOutput:
+      type: object
+      properties:
+        performance: 
+          type: array
+          items:
+            type: object
+            properties: { date: { type: string }, value: { type: number } }
+
+    GetClientAccountStatementInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        fromDate: { type: string }
+        toDate: { type: string }
+        format: { type: string }
+    GetClientAccountStatementOutput:
+      type: object
+      properties:
+        filename: { type: string }
+        bytes: { type: string, format: byte }
+
+    GetClientAccountRequestConfirmationInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        requestId: { type: string }
+        format: { type: string }
+    GetClientAccountRequestConfirmationOutput:
+      type: object
+      properties:
+        filename: { type: string }
+        bytes: { type: string, format: byte }
+
+    GetClientReferralInput:
+      type: object
+      properties: {}
+    GetClientReferralOutput:
+      type: object
+      properties:
+        referralCode: { type: string }
+        referredClientsCount: { type: integer }
+
+    GetClientAccountRequestPolicyInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        requestId: { type: string }
+    GetClientAccountRequestPolicyOutput:
+      type: object
+      properties:
+        groups: { type: array, items: { type: object } }
+
+    ListFundsForSubscriptionInput:
+      type: object
+      properties:
+        accountId: { type: string }
+    ListFundsForSubscriptionOutput:
+      type: object
+      properties:
+        funds: { type: array, items: { $ref: '#/components/schemas/Fund' } }
+
+    ListClientAccountBalanceInput:
+      type: object
+      properties:
+        accountId: { type: string }
+    ListClientAccountBalanceOutput:
+      type: object
+      properties:
+        balance: 
+          type: array
+          items: 
+            type: object
+            properties: { fundId: { type: string }, value: { type: number } }
+
+    ListClientAccountRequestsInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        limit: { type: integer }
+    ListClientAccountRequestsOutput:
+      type: object
+      properties:
+        requests: { type: array, items: { type: object } }
+
+    ListClientBankAccountsInput:
+      type: object
+      properties: {}
+    ListClientBankAccountsOutput:
+      type: object
+      properties:
+        bankAccounts: { type: array, items: { $ref: '#/components/schemas/BankAccount' } }
+
+    ListDisplayCurrenciesInput:
+      type: object
+      properties: {}
+    ListDisplayCurrenciesOutput:
+      type: object
+      properties:
+        currencies: { type: array, items: { type: object } }
+
+    ListClientSuitabilityAssessmentsInput:
+      type: object
+      properties: {}
+    ListClientSuitabilityAssessmentsOutput:
+      type: object
+      properties:
+        assessments: { type: array, items: { type: object } }
+
+    ListDuitNowBanksInput:
+      type: object
+      properties:
+        accountId: { type: string }
+    ListDuitNowBanksOutput:
+      type: object
+      properties:
+        banks: { type: array, items: { type: object } }
+
+    ListInvestConsentsInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        fundId: { type: string }
+        fundClassSequence: { type: integer }
+    ListInvestConsentsOutput:
+      type: object
+      properties:
+        consents: { type: array, items: { type: object } }
+
+    ListBanksInput:
+      type: object
+      properties: {}
+    ListBanksOutput:
+      type: object
+      properties:
+        banks: { type: array, items: { type: object } }
+
+    ListClientAccountMandateRequestsInput:
+      type: object
+      properties:
+        accountId: { type: string }
+    ListClientAccountMandateRequestsOutput:
+      type: object
+      properties:
+        requests: { type: array, items: { type: object } }
+
+    ListClientPromosInput:
+      type: object
+      properties: {}
+    ListClientPromosOutput:
+      type: object
+      properties:
+        promos: { type: array, items: { type: object } }
+
+    ListClientAccountPerformanceInput:
+      type: object
+      properties:
+        accountIds: { type: array, items: { type: string } }
+    ListClientAccountPerformanceOutput:
+      type: object
+      properties:
+        performance: { type: array, items: { type: object } }
+
+    ListPaymentMethodsInput:
+      type: object
+      properties: {}
+    ListPaymentMethodsOutput:
+      type: object
+      properties:
+        duitnow: { type: boolean }
+        bankTransfer: { type: boolean }
+
+    GetVoucherInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        voucherCode: { type: string }
+    GetVoucherOutput:
+      type: object
+      properties:
+        valid: { type: boolean }
+        feeAmount: { type: number }
+
+    GetPreviewInvestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        fundId: { type: string }
+        amount: { type: number }
+    GetPreviewInvestOutput:
+      type: object
+      properties:
+        feeAmount: { type: number }
+        postFeeAmount: { type: number }
+
+    GetProjectedFundPriceInput:
+      type: object
+      properties:
+        fundId: { type: string }
+    GetProjectedFundPriceOutput:
+      type: object
+      properties:
+        netAssetValuePerUnit: { type: number }
+
+    CreateInvestmentRequestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        amount: { type: number }
+    CreateInvestmentRequestOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    CreateRedemptionRequestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        requestedAmount: { type: number }
+    CreateRedemptionRequestOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    CreateSwitchRequestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        switchFromFundId: { type: string }
+        switchToFundId: { type: string }
+    CreateSwitchRequestOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    CreateRequestCancellationInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        requestId: { type: string }
+    CreateRequestCancellationOutput:
+      type: object
+      properties: {}
+
+    CreateWithdrawalRequestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        amount: { type: number }
+    CreateWithdrawalRequestOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    CreateDepositRequestInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        amount: { type: number }
+    CreateDepositRequestOutput:
+      type: object
+      properties:
+        requestId: { type: string }
+
+    CreateSuitabilityAssessmentInput:
+      type: object
+      properties:
+        suitabilityAssessment: { type: object }
+    CreateSuitabilityAssessmentOutput:
+      type: object
+      properties:
+        suitabilityAssessmentId: { type: string }
+
+    CreateClientBankAccountInput:
+      type: object
+      properties:
+        bankAccount: { $ref: '#/components/schemas/BankAccount' }
+    CreateClientBankAccountOutput:
+      type: object
+      properties: {}
+
+    UpdateDisplayCurrencyInput:
+      type: object
+      properties:
+        displayCurrency: { type: string }
+    UpdateDisplayCurrencyOutput:
+      type: object
+      properties: {}
+
+    UpdateAccountNameInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        accountName: { type: string }
+    UpdateAccountNameOutput:
+      type: object
+      properties: {}
+
+    CreateDuitnowPaymentInput:
+      type: object
+      properties:
+        accountId: { type: string }
+        requestId: { type: string }
+    CreateDuitnowPaymentOutput:
+      type: object
+      properties:
+        url: { type: string }
+
+    UpdatePersonaTitleInput:
+      type: object
+      properties:
+        title: { type: string }
+    UpdatePersonaTitleOutput:
+      type: object
+      properties: {}
+
+    UpdateClientProfileInput:
+      type: object
+      properties:
+        ethnicity: { type: string }
+    UpdateClientProfileOutput:
+      type: object
+      properties: {}
+
+    # -------------------------------------------------------------------------
+    # WRAPPERS (Discriminator Schemas)
+    # -------------------------------------------------------------------------
+    ListClientAccounts:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_accounts], example: list_client_accounts }
+        payload: { $ref: '#/components/schemas/ListClientAccountsInput' }
+    GetClientProfile:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_profile], example: get_client_profile }
+        payload: { $ref: '#/components/schemas/GetClientProfileInput' }
+    GetFund:
+      type: object
+      properties:
+        name: { type: string, enum: [get_fund], example: get_fund }
+        payload: { $ref: '#/components/schemas/GetFundInput' }
+    GetRequestByDuitNowEndToEndID:
+      type: object
+      properties:
+        name: { type: string, enum: [get_request_by_duitnow_endToEndId], example: get_request_by_duitnow_endToEndId }
+        payload: { $ref: '#/components/schemas/GetRequestByDuitNowEndToEndIDInput' }
+    GetClientAccountAllocationPerformance:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_account_allocation_performance], example: get_client_account_allocation_performance }
+        payload: { $ref: '#/components/schemas/GetClientAccountAllocationPerformanceInput' }
+    GetClientAccountStatement:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_account_statement], example: get_client_account_statement }
+        payload: { $ref: '#/components/schemas/GetClientAccountStatementInput' }
+    GetClientAccountRequestConfirmation:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_account_request_confirmation], example: get_client_account_request_confirmation }
+        payload: { $ref: '#/components/schemas/GetClientAccountRequestConfirmationInput' }
+    GetClientReferral:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_referral], example: get_client_referral }
+        payload: { $ref: '#/components/schemas/GetClientReferralInput' }
+    GetClientAccountRequestPolicy:
+      type: object
+      properties:
+        name: { type: string, enum: [get_client_account_request_policy], example: get_client_account_request_policy }
+        payload: { $ref: '#/components/schemas/GetClientAccountRequestPolicyInput' }
+    ListFundsForSubscription:
+      type: object
+      properties:
+        name: { type: string, enum: [list_funds_for_subscription], example: list_funds_for_subscription }
+        payload: { $ref: '#/components/schemas/ListFundsForSubscriptionInput' }
+    ListClientAccountBalance:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_account_balance], example: list_client_account_balance }
+        payload: { $ref: '#/components/schemas/ListClientAccountBalanceInput' }
+    ListClientAccountRequests:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_account_requests], example: list_client_account_requests }
+        payload: { $ref: '#/components/schemas/ListClientAccountRequestsInput' }
+    ListClientBankAccounts:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_bank_accounts], example: list_client_bank_accounts }
+        payload: { $ref: '#/components/schemas/ListClientBankAccountsInput' }
+    ListDisplayCurrencies:
+      type: object
+      properties:
+        name: { type: string, enum: [list_display_currencies], example: list_display_currencies }
+        payload: { $ref: '#/components/schemas/ListDisplayCurrenciesInput' }
+    ListClientSuitabilityAssessments:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_suitability_assessments], example: list_client_suitability_assessments }
+        payload: { $ref: '#/components/schemas/ListClientSuitabilityAssessmentsInput' }
+    ListDuitNowBanks:
+      type: object
+      properties:
+        name: { type: string, enum: [list_duitnow_banks], example: list_duitnow_banks }
+        payload: { $ref: '#/components/schemas/ListDuitNowBanksInput' }
+    ListInvestConsents:
+      type: object
+      properties:
+        name: { type: string, enum: [list_invest_consents], example: list_invest_consents }
+        payload: { $ref: '#/components/schemas/ListInvestConsentsInput' }
+    ListBanks:
+      type: object
+      properties:
+        name: { type: string, enum: [list_banks], example: list_banks }
+        payload: { $ref: '#/components/schemas/ListBanksInput' }
+    ListClientAccountMandateRequests:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_account_mandate_requests], example: list_client_account_mandate_requests }
+        payload: { $ref: '#/components/schemas/ListClientAccountMandateRequestsInput' }
+    ListClientPromos:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_promos], example: list_client_promos }
+        payload: { $ref: '#/components/schemas/ListClientPromosInput' }
+    ListClientAccountPerformance:
+      type: object
+      properties:
+        name: { type: string, enum: [list_client_account_performance], example: list_client_account_performance }
+        payload: { $ref: '#/components/schemas/ListClientAccountPerformanceInput' }
+    ListPaymentMethods:
+      type: object
+      properties:
+        name: { type: string, enum: [list_payment_methods], example: list_payment_methods }
+        payload: { $ref: '#/components/schemas/ListPaymentMethodsInput' }
+    GetVoucher:
+      type: object
+      properties:
+        name: { type: string, enum: [get_voucher], example: get_voucher }
+        payload: { $ref: '#/components/schemas/GetVoucherInput' }
+    GetPreviewInvest:
+      type: object
+      properties:
+        name: { type: string, enum: [get_preview_invest], example: get_preview_invest }
+        payload: { $ref: '#/components/schemas/GetPreviewInvestInput' }
+    GetProjectedFundPrice:
+      type: object
+      properties:
+        name: { type: string, enum: [get_projected_fund_price], example: get_projected_fund_price }
+        payload: { $ref: '#/components/schemas/GetProjectedFundPriceInput' }
+
+    CreateInvestmentRequest:
+      type: object
+      properties:
+        name: { type: string, enum: [create_investment_request], example: create_investment_request }
+        payload: { $ref: '#/components/schemas/CreateInvestmentRequestInput' }
+    CreateRedemptionRequest:
+      type: object
+      properties:
+        name: { type: string, enum: [create_redemption_request], example: create_redemption_request }
+        payload: { $ref: '#/components/schemas/CreateRedemptionRequestInput' }
+    CreateSwitchRequest:
+      type: object
+      properties:
+        name: { type: string, enum: [create_switch_request], example: create_switch_request }
+        payload: { $ref: '#/components/schemas/CreateSwitchRequestInput' }
+    CreateRequestCancellation:
+      type: object
+      properties:
+        name: { type: string, enum: [create_request_cancellation], example: create_request_cancellation }
+        payload: { $ref: '#/components/schemas/CreateRequestCancellationInput' }
+    CreateWithdrawalRequest:
+      type: object
+      properties:
+        name: { type: string, enum: [create_withdrawal_request], example: create_withdrawal_request }
+        payload: { $ref: '#/components/schemas/CreateWithdrawalRequestInput' }
+    CreateDepositRequest:
+      type: object
+      properties:
+        name: { type: string, enum: [create_deposit_request], example: create_deposit_request }
+        payload: { $ref: '#/components/schemas/CreateDepositRequestInput' }
+    CreateSuitabilityAssessment:
+      type: object
+      properties:
+        name: { type: string, enum: [create_suitability_assessment], example: create_suitability_assessment }
+        payload: { $ref: '#/components/schemas/CreateSuitabilityAssessmentInput' }
+    CreateClientBankAccount:
+      type: object
+      properties:
+        name: { type: string, enum: [create_client_bank_account], example: create_client_bank_account }
+        payload: { $ref: '#/components/schemas/CreateClientBankAccountInput' }
+    UpdateDisplayCurrency:
+      type: object
+      properties:
+        name: { type: string, enum: [update_display_currency], example: update_display_currency }
+        payload: { $ref: '#/components/schemas/UpdateDisplayCurrencyInput' }
+    UpdateAccountName:
+      type: object
+      properties:
+        name: { type: string, enum: [update_account_name], example: update_account_name }
+        payload: { $ref: '#/components/schemas/UpdateAccountNameInput' }
+    CreateDuitnowPayment:
+      type: object
+      properties:
+        name: { type: string, enum: [create_duitnow_payment], example: create_duitnow_payment }
+        payload: { $ref: '#/components/schemas/CreateDuitnowPaymentInput' }
+    UpdatePersonaTitle:
+      type: object
+      properties:
+        name: { type: string, enum: [update_persona_title], example: update_persona_title }
+        payload: { $ref: '#/components/schemas/UpdatePersonaTitleInput' }
+    UpdateClientProfile:
+      type: object
+      properties:
+        name: { type: string, enum: [update_client_profile], example: update_client_profile }
+        payload: { $ref: '#/components/schemas/UpdateClientProfileInput' }
+
+security:
+  - BearerAuth: []
+
+paths:
+  # -------------------------------------------------------------------------
+  # QUERY ENDPOINT
+  # -------------------------------------------------------------------------
+  /query:
+    post:
+      tags: [Query]
+      summary: Execute Query
+      description: |
+        Endpoint for all read-only operations.
+        
+        **Action Selection:**
+        Use the `oneOf` dropdown in the **Request Body** to select the specific action you wish to perform. The schema will update to show the required payload.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ListClientAccounts'
+                - $ref: '#/components/schemas/GetClientProfile'
+                - $ref: '#/components/schemas/GetFund'
+                - $ref: '#/components/schemas/GetRequestByDuitNowEndToEndID'
+                - $ref: '#/components/schemas/GetClientAccountAllocationPerformance'
+                - $ref: '#/components/schemas/GetClientAccountStatement'
+                - $ref: '#/components/schemas/GetClientAccountRequestConfirmation'
+                - $ref: '#/components/schemas/GetClientReferral'
+                - $ref: '#/components/schemas/GetClientAccountRequestPolicy'
+                - $ref: '#/components/schemas/ListFundsForSubscription'
+                - $ref: '#/components/schemas/ListClientAccountBalance'
+                - $ref: '#/components/schemas/ListClientAccountRequests'
+                - $ref: '#/components/schemas/ListClientBankAccounts'
+                - $ref: '#/components/schemas/ListDisplayCurrencies'
+                - $ref: '#/components/schemas/ListClientSuitabilityAssessments'
+                - $ref: '#/components/schemas/ListDuitNowBanks'
+                - $ref: '#/components/schemas/ListInvestConsents'
+                - $ref: '#/components/schemas/ListBanks'
+                - $ref: '#/components/schemas/ListClientAccountMandateRequests'
+                - $ref: '#/components/schemas/ListClientPromos'
+                - $ref: '#/components/schemas/ListClientAccountPerformance'
+                - $ref: '#/components/schemas/ListPaymentMethods'
+                - $ref: '#/components/schemas/GetVoucher'
+                - $ref: '#/components/schemas/GetPreviewInvest'
+                - $ref: '#/components/schemas/GetProjectedFundPrice'
+              discriminator:
+                propertyName: name
+                mapping:
+                  list_client_accounts: '#/components/schemas/ListClientAccounts'
+                  get_client_profile: '#/components/schemas/GetClientProfile'
+                  get_fund: '#/components/schemas/GetFund'
+                  get_request_by_duitnow_endToEndId: '#/components/schemas/GetRequestByDuitNowEndToEndID'
+                  get_client_account_allocation_performance: '#/components/schemas/GetClientAccountAllocationPerformance'
+                  get_client_account_statement: '#/components/schemas/GetClientAccountStatement'
+                  get_client_account_request_confirmation: '#/components/schemas/GetClientAccountRequestConfirmation'
+                  get_client_referral: '#/components/schemas/GetClientReferral'
+                  get_client_account_request_policy: '#/components/schemas/GetClientAccountRequestPolicy'
+                  list_funds_for_subscription: '#/components/schemas/ListFundsForSubscription'
+                  list_client_account_balance: '#/components/schemas/ListClientAccountBalance'
+                  list_client_account_requests: '#/components/schemas/ListClientAccountRequests'
+                  list_client_bank_accounts: '#/components/schemas/ListClientBankAccounts'
+                  list_display_currencies: '#/components/schemas/ListDisplayCurrencies'
+                  list_client_suitability_assessments: '#/components/schemas/ListClientSuitabilityAssessments'
+                  list_duitnow_banks: '#/components/schemas/ListDuitNowBanks'
+                  list_invest_consents: '#/components/schemas/ListInvestConsents'
+                  list_banks: '#/components/schemas/ListBanks'
+                  list_client_account_mandate_requests: '#/components/schemas/ListClientAccountMandateRequests'
+                  list_client_promos: '#/components/schemas/ListClientPromos'
+                  list_client_account_performance: '#/components/schemas/ListClientAccountPerformance'
+                  list_payment_methods: '#/components/schemas/ListPaymentMethods'
+                  get_voucher: '#/components/schemas/GetVoucher'
+                  get_preview_invest: '#/components/schemas/GetPreviewInvest'
+                  get_projected_fund_price: '#/components/schemas/GetProjectedFundPrice'
+      responses:
+        '200':
+          description: Successful Query Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ListClientAccountsOutput'
+                  - $ref: '#/components/schemas/GetClientProfileOutput'
+                  - $ref: '#/components/schemas/GetFundOutput'
+                  - $ref: '#/components/schemas/GetRequestByDuitNowEndToEndIDOutput'
+                  - $ref: '#/components/schemas/GetClientAccountAllocationPerformanceOutput'
+                  - $ref: '#/components/schemas/GetClientAccountStatementOutput'
+                  - $ref: '#/components/schemas/GetClientAccountRequestConfirmationOutput'
+                  - $ref: '#/components/schemas/GetClientReferralOutput'
+                  - $ref: '#/components/schemas/GetClientAccountRequestPolicyOutput'
+                  - $ref: '#/components/schemas/ListFundsForSubscriptionOutput'
+                  - $ref: '#/components/schemas/ListClientAccountBalanceOutput'
+                  - $ref: '#/components/schemas/ListClientAccountRequestsOutput'
+                  - $ref: '#/components/schemas/ListClientBankAccountsOutput'
+                  - $ref: '#/components/schemas/ListDisplayCurrenciesOutput'
+                  - $ref: '#/components/schemas/ListClientSuitabilityAssessmentsOutput'
+                  - $ref: '#/components/schemas/ListDuitNowBanksOutput'
+                  - $ref: '#/components/schemas/ListInvestConsentsOutput'
+                  - $ref: '#/components/schemas/ListBanksOutput'
+                  - $ref: '#/components/schemas/ListClientAccountMandateRequestsOutput'
+                  - $ref: '#/components/schemas/ListClientPromosOutput'
+                  - $ref: '#/components/schemas/ListClientAccountPerformanceOutput'
+                  - $ref: '#/components/schemas/ListPaymentMethodsOutput'
+                  - $ref: '#/components/schemas/GetVoucherOutput'
+                  - $ref: '#/components/schemas/GetPreviewInvestOutput'
+                  - $ref: '#/components/schemas/GetProjectedFundPriceOutput'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '410':
+          $ref: '#/components/responses/GoneError'
+        '412':
+          $ref: '#/components/responses/PreconditionFailedError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableError'
+
+  # -------------------------------------------------------------------------
+  # COMMAND ENDPOINT
+  # -------------------------------------------------------------------------
+  /command:
+    post:
+      tags:
+        - Command
+      summary: Execute Command
+      description: |
+        Single endpoint for all write/mutate operations.
+        
+        **Action Selection:**
+        Use the `oneOf` dropdown in the **Request Body** to select the specific action you wish to perform.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/CreateInvestmentRequest'
+                - $ref: '#/components/schemas/CreateRedemptionRequest'
+                - $ref: '#/components/schemas/CreateSwitchRequest'
+                - $ref: '#/components/schemas/CreateRequestCancellation'
+                - $ref: '#/components/schemas/CreateWithdrawalRequest'
+                - $ref: '#/components/schemas/CreateDepositRequest'
+                - $ref: '#/components/schemas/CreateSuitabilityAssessment'
+                - $ref: '#/components/schemas/CreateClientBankAccount'
+                - $ref: '#/components/schemas/UpdateDisplayCurrency'
+                - $ref: '#/components/schemas/UpdateAccountName'
+                - $ref: '#/components/schemas/CreateDuitnowPayment'
+                - $ref: '#/components/schemas/UpdatePersonaTitle'
+                - $ref: '#/components/schemas/UpdateClientProfile'
+              discriminator:
+                propertyName: name
+                mapping:
+                  create_investment_request: '#/components/schemas/CreateInvestmentRequest'
+                  create_redemption_request: '#/components/schemas/CreateRedemptionRequest'
+                  create_switch_request: '#/components/schemas/CreateSwitchRequest'
+                  create_request_cancellation: '#/components/schemas/CreateRequestCancellation'
+                  create_withdrawal_request: '#/components/schemas/CreateWithdrawalRequest'
+                  create_deposit_request: '#/components/schemas/CreateDepositRequest'
+                  create_suitability_assessment: '#/components/schemas/CreateSuitabilityAssessment'
+                  create_client_bank_account: '#/components/schemas/CreateClientBankAccount'
+                  update_display_currency: '#/components/schemas/UpdateDisplayCurrency'
+                  update_account_name: '#/components/schemas/UpdateAccountName'
+                  create_duitnow_payment: '#/components/schemas/CreateDuitnowPayment'
+                  update_persona_title: '#/components/schemas/UpdatePersonaTitle'
+                  update_client_profile: '#/components/schemas/UpdateClientProfile'
+      responses:
+        '200':
+          description: Successful Command Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CreateInvestmentRequestOutput'
+                  - $ref: '#/components/schemas/CreateRedemptionRequestOutput'
+                  - $ref: '#/components/schemas/CreateSwitchRequestOutput'
+                  - $ref: '#/components/schemas/CreateRequestCancellationOutput'
+                  - $ref: '#/components/schemas/CreateWithdrawalRequestOutput'
+                  - $ref: '#/components/schemas/CreateDepositRequestOutput'
+                  - $ref: '#/components/schemas/CreateSuitabilityAssessmentOutput'
+                  - $ref: '#/components/schemas/CreateClientBankAccountOutput'
+                  - $ref: '#/components/schemas/UpdateDisplayCurrencyOutput'
+                  - $ref: '#/components/schemas/UpdateAccountNameOutput'
+                  - $ref: '#/components/schemas/CreateDuitnowPaymentOutput'
+                  - $ref: '#/components/schemas/UpdatePersonaTitleOutput'
+                  - $ref: '#/components/schemas/UpdateClientProfileOutput'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '410':
+          $ref: '#/components/responses/GoneError'
+        '412':
+          $ref: '#/components/responses/PreconditionFailedError'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableError'

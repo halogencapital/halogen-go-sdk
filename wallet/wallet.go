@@ -1983,7 +1983,8 @@ type CreateDuitnowPaymentOutput struct {
 // Errors:
 //   - [ErrMissingParameter]
 //   - [ErrInsufficientAccess]
-//   - [ErrDuitNow]
+//   - [ErrDuitNowInvalidParameter]
+//   - [ErrDuitNowUnavailable]
 //   - [ErrMissingResource]
 //   - [ErrInternal]
 func (c *Client) CreateDuitnowPayment(ctx context.Context, input *CreateDuitnowPaymentInput) (output *CreateDuitnowPaymentOutput, err error) {
