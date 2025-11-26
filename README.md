@@ -48,3 +48,7 @@ Checkout https://pkg.go.dev/github.com/halogencapital/wallet-go
 
 Checkout [OpenAPI 3.0 specifications](https://developer.halogen.my/openapi.yml).
 
+### Wallet Server availability
+
+Halogen Wallet status page at https://halogen-wallet.openstatus.dev/
+
