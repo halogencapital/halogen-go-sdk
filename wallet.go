@@ -1182,7 +1182,7 @@ type ListClientPromosOutput struct {
 	Promos []Promo `json:"promos"`
 }
 
-// ListClientPromos lists available promotional offers and vouchers that can be applied to client investments.
+// ListClientPromos Lists available promotional offers that are applied to client investments.
 //
 // cURL:
 //
@@ -1372,7 +1372,7 @@ type GetProjectedFundPriceOutput struct {
 	NetAssetValuePerUnit float64 `json:"netAssetValuePerUnit"`
 }
 
-// GetProjectedFundPrice retrieves the current or projected unit net asset value (NAV) for a specific fund class.
+// GetProjectedFundPrice retrieves the projected unit net asset value per unit (NAV per unit) for a specific fund class.
 //
 // cURL:
 //
