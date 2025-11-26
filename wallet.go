@@ -35,12 +35,12 @@ type Options struct {
 	// Optional.
 	HTTPClient *http.Client
 
-	// MaxReadRetry reports how many times to retry a query request when fails.
+	// MaxReadRetry specifies how many times to retry a query request when fails.
 	//
 	// Optional, defaulted to 5 times.
 	MaxReadRetry int
 
-	// RetryInterval reports how long to wait before retrying a query request when fails.
+	// RetryInterval specifies how long to wait before retrying a query request when fails.
 	//
 	// Optional, defaulted to 50 milliseconds.
 	RetryInterval time.Duration

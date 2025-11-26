@@ -1,3 +1,13 @@
+// # Quick use
+//
+// - Listing accounts [Client.ListClientAccounts]
+//
+// - Listing available funds [Client.ListFundsForSubscription]
+//
+// - Get projected fund price [Client.GetProjectedFundPrice]
+//
+// - Create investment request [Client.CreateInvestmentRequest]
+//
 // # Query APIs
 //
 // - [Client.ListClientAccounts]
