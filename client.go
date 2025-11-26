@@ -14,7 +14,7 @@ import (
 
 const (
 	endpoint  string = "https://external-api.wallet.halogen.my"
-	version   string = "0.0.4"
+	version   string = "0.0.5"
 	userAgent string = "wallet/" + version + " lang/go"
 )
 
